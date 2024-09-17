@@ -27,7 +27,7 @@ body {
     width: fit-content;
 }
 
-.shop-now-button {
+.check-out-plans-button {
     background: black;
     color: white;
     min-width: 260px;
@@ -38,9 +38,9 @@ body {
     color: white;
 }
 
-.shop-now-button:hover,
-.shop-now-button:active,
-.shop-now-button:focus,
+.check-out-plans-button:hover,
+.check-out-plans-button:active,
+.check-out-plans-button:focus,
 .btn-black:hover,
 .btn-black:active,
 .btn-black:focus {
