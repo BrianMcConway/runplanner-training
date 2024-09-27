@@ -1,12 +1,24 @@
+/* Background for all pages */
 html {
     height: 100%;
 }
 
-body {
+/* Background for pages with images */
+.default-page {
     background: url('/media/running.jpg') no-repeat center center fixed;
     background-size: cover;
     height: calc(100vh - 164px);
     color: #555;
+}
+
+/* Background for plain color pages */
+.plain-background {
+    background-color: #f0f0f0;  /* Light grey background */
+    height: calc(100vh - 164px);
+    color: #555;
+}
+
+body {
     font-family: 'Lato';
 }
 
@@ -78,4 +90,24 @@ body {
     .header-container {
         padding-top: 164px;
     }
+}
+
+/* Products page */
+/* Add padding to the top to avoid overlap with the fixed header */
+.content-container {
+    padding-top: 150px;
+}
+
+/* Custom width for form elements */
+.custom-width {
+    width: 250px; /* Adjust this as per your desired width */
+    max-width: 100%;
+}
+
+/* Center align the form fields */
+form .input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
 }
