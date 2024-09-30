@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block body_class %}plain-background{% endblock %}
+
+{% block extra_title %}
+Purchase Confirmation
+{% endblock %}
+
+{% block content %}
+<div class="content-container container text-center">
+    <h1 class="mb-4 text-center">Basket</h1>
+    <p>You're about to purchase the following training plan:</p>
+
+    <ul class="list-unstyled">
+        <li><strong>Distance:</strong> {{ distance }}</li>
+        <li><strong>Difficulty:</strong> {{ difficulty }}</li>
+        <li><strong>Terrain:</strong> {{ terrain }}</li>
+        <li><strong>Elevation:</strong> {{ elevation }}</li>
+        <li><strong>Event Date:</strong> {{ event_date }}</li>
+    </ul>
+
+    <!-- Add a checkout button or a link to continue purchasing -->
+    <div class="mt-4">
+        <a href="#" class="btn btn-success">Proceed to Checkout</a>
+    </div>
+</div>
+{% endblock %}

@@ -10,12 +10,19 @@ Training Plan Preview
 <div class="content-container container text-center">
     <h1 class="mb-4 text-center">Training Plan Preview</h1>
 
-    <div class="image-container mx-auto"> 
+    <!-- Center the image -->
+    <div class="image-container mx-auto">
         <img src="{% url 'generate_plan_image' distance difficulty terrain elevation event_date %}" alt="Generated Training Plan" class="img-fluid mt-3">
     </div>
 
+    <!-- Button to go back -->
     <div class="mt-4 text-center">
         <a href="{% url 'training_plans' %}" class="btn btn-secondary">Go Back to Selection</a>
+    </div>
+
+    <!-- Add to Basket Button -->
+    <div class="mt-4 text-center">
+        <a href="{% url 'basket' distance difficulty terrain elevation event_date %}" class="btn btn-primary btn-lg add-to-basket">Add to Basket</a>
     </div>
 </div>
 {% endblock %}

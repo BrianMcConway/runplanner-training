@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from PIL import Image, ImageDraw, ImageFont
 import io
 from django.http import HttpResponse
@@ -72,3 +72,14 @@ def generate_plan_image(request, distance, difficulty, terrain, elevation, event
 
     # Return the image as an HTTP response
     return HttpResponse(buffer, content_type='image/png')
+
+# View to handle the basket where the user confirms purchasing a training plan
+def basket(request, distance, difficulty, terrain, elevation, event_date):
+    # Render the basket.html
+    return render(request, 'products/basket.html', {
+        'distance': distance,
+        'difficulty': difficulty,
+        'terrain': terrain,
+        'elevation': elevation,
+        'event_date': event_date
+    })

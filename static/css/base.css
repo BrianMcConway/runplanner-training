@@ -73,3 +73,16 @@ input, select {
 .content-container {
     padding-top: 150px;
 }
+
+/* Style for the Add to Basket button */
+.add-to-basket {
+    width: fit-content;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    background-color: #007bff;
+    color: white;
+}
+
+.add-to-basket:hover {
+    background-color: #0056b3; /* Darken the color on hover */
+}
