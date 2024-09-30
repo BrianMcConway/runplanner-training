@@ -1,34 +1,74 @@
 from django.shortcuts import render
-from .models import TrainingPlan
+from PIL import Image, ImageDraw, ImageFont
+import io
+from django.http import HttpResponse
 from .forms import TrainingPlanFilterForm
+from django.utils.dateformat import format as date_format
+from django.utils import timezone
 
+# View for selecting the training plan
 def training_plans(request):
-    # Initialize the form with GET parameters if available, or None if not
     form = TrainingPlanFilterForm(request.GET or None)
     
-    # Get all training plans from the database
-    training_plans = TrainingPlan.objects.all()
-
-    # Check if the form is valid (i.e., it passed all validation checks)
+    # Validate form data using Django's built-in validation
     if form.is_valid():
-        # Retrieve the filtered values from the form's cleaned data
         distance = form.cleaned_data.get('distance')
         difficulty = form.cleaned_data.get('difficulty')
         terrain = form.cleaned_data.get('terrain')
         elevation = form.cleaned_data.get('elevation')
+        event_date = form.cleaned_data.get('event_date')
 
-        # Apply filters based on the form's input
-        if distance:
-            training_plans = training_plans.filter(distance=distance)
-        if difficulty:
-            training_plans = training_plans.filter(difficulty=difficulty)
-        if terrain:
-            training_plans = training_plans.filter(terrain=terrain)
-        if elevation:
-            training_plans = training_plans.filter(elevation=elevation)
+        # Format the date in a URL-safe format (dd-mm-yyyy)
+        formatted_event_date = date_format(event_date, 'd-m-Y')
+        return render(request, 'products/plan_preview.html', {
+            'distance': distance,
+            'difficulty': difficulty,
+            'terrain': terrain,
+            'elevation': elevation,
+            'event_date': formatted_event_date,  # Use URL-safe format
+        })
 
-    # Render the template and pass the form and filtered training plans to the context
+    # Render the form with validation errors if not valid
     return render(request, 'products/training_plans.html', {
-        'form': form,                  # The form is sent back to the template to display the current state
-        'training_plans': training_plans  # The filtered list of training plans to be displayed
+        'form': form,
     })
+
+# Generate dynamic training plan image with 'SAMPLE' text
+def generate_plan_image(request, distance, difficulty, terrain, elevation, event_date):
+    # Create a new image with hex background color
+    img = Image.new('RGB', (600, 400), color='#496D89')  # Increased the image size for more space
+    draw = ImageDraw.Draw(img)
+
+    try:
+        # Try loading fonts
+        font = ImageFont.truetype("arial.ttf", 20)  # Standard font for plan details
+        sample_font = ImageFont.truetype("arial.ttf", 50)  # Larger font for 'SAMPLE'
+    except IOError:
+        # Use default font if custom font fails
+        font = ImageFont.load_default()
+        sample_font = ImageFont.load_default()
+
+    # Add 'SAMPLE' text prominently in the center of the image
+    # Use textbbox to calculate text size
+    sample_bbox = draw.textbbox((0, 0), "SAMPLE", font=sample_font)
+    text_width = sample_bbox[2] - sample_bbox[0]  # Calculate the width
+    text_height = sample_bbox[3] - sample_bbox[1]  # Calculate the height
+    sample_x = (img.width - text_width) // 2  # Center 'SAMPLE' horizontally
+    sample_y = 20  # Position 'SAMPLE' near the top
+    draw.text((sample_x, sample_y), "SAMPLE", font=sample_font, fill=(255, 255, 255))
+
+    # Add selected plan details lower down
+    draw.text((10, 150), f"Training Plan", font=font, fill=(255, 255, 255))
+    draw.text((10, 180), f"Distance: {distance}", font=font, fill=(255, 255, 255))
+    draw.text((10, 210), f"Difficulty: {difficulty}", font=font, fill=(255, 255, 255))
+    draw.text((10, 240), f"Terrain: {terrain}", font=font, fill=(255, 255, 255))
+    draw.text((10, 270), f"Elevation: {elevation}", font=font, fill=(255, 255, 255))
+    draw.text((10, 300), f"Event Date: {event_date}", font=font, fill=(255, 255, 255))  # Date in dd-mm-yyyy format
+
+    # Save the image to a buffer
+    buffer = io.BytesIO()
+    img.save(buffer, format='PNG')
+    buffer.seek(0)
+
+    # Return the image as an HTTP response
+    return HttpResponse(buffer, content_type='image/png')

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block body_class %}plain-background{% endblock %}
 
@@ -10,83 +11,11 @@ Training Plans
 <div class="content-container container">
     <h1 class="mb-4 text-center">Choose Your Training Plan</h1>
 
-    <!-- Form for selecting options -->
-    <form method="GET" action="{% url 'training_plans' %}" class="d-flex flex-column align-items-center">
-        <!-- Distance selection -->
-        <div class="mb-3 input-container">
-            <label for="distance" class="form-label">Distance</label>
-            <select class="form-select custom-width" id="distance" name="distance">
-                <option value="">Select Distance</option>
-                <option value="5k">5k</option>
-                <option value="10k">10k</option>
-                <option value="half_marathon">Half Marathon</option>
-                <option value="marathon">Marathon</option>
-                <option value="50k">50k Ultra</option>
-                <option value="80k">80k Ultra</option>
-                <option value="100k">100k Ultra</option>
-                <option value="160k">160k Ultra</option>
-                <option value="200k">200k Ultra</option>
-            </select>
-        </div>
-
-        <!-- Fitness Level selection -->
-        <div class="mb-3 input-container">
-            <label for="difficulty" class="form-label">Fitness Level</label>
-            <select class="form-select custom-width" id="difficulty" name="difficulty">
-                <option value="">Select Fitness Level</option>
-                <option value="beginner">Beginner</option>
-                <option value="intermediate">Intermediate</option>
-                <option value="advanced">Advanced</option>
-            </select>
-        </div>
-
-        <!-- Terrain selection -->
-        <div class="mb-3 input-container">
-            <label for="terrain" class="form-label">Terrain</label>
-            <select class="form-select custom-width" id="terrain" name="terrain">
-                <option value="">Select Terrain</option>
-                <option value="road">Road</option>
-                <option value="trail">Trail</option>
-            </select>
-        </div>
-
-        <!-- Elevation selection -->
-        <div class="mb-3 input-container">
-            <label for="elevation" class="form-label">Elevation</label>
-            <select class="form-select custom-width" id="elevation" name="elevation">
-                <option value="">Select Elevation</option>
-                <option value="0-500m">0m-500m</option>
-                <option value="500-1000m">500m-1000m</option>
-                <option value="1000-1500m">1000m-1500m</option>
-                <option value="1500-2000m">1500m-2000m</option>
-                <option value="2000-3000m">2000m-3000m</option>
-            </select>
-        </div>
-
-        <!-- Event Date selection -->
-        <div class="mb-3 input-container">
-            <label for="event_date" class="form-label">Event Date</label>
-            <input type="date" class="form-control custom-width" id="event_date" name="event_date">
-        </div>
-
-        <!-- Submit button -->
-        <div class="mt-3 input-container">
-            <button type="submit" class="btn btn-primary custom-width">Find Training Plans</button>
-        </div>
-    </form>
-
-    <!-- Display training plans after the form -->
-<div class="row mt-5">
-    {% for plan in plans %}
-        <div class="col-lg-6 mb-4">
-            <div class="border p-3">
-                <h3>{{ plan.name }}</h3>
-                <p>{{ plan.description }}</p>
-                <p>Price: €{{ plan.price }}</p>
-                <a href="{{ plan.get_absolute_url }}" class="btn btn-primary">View Plan</a>
-            </div>
-        </div>
-    {% endfor %}
-</div>
+    <!-- Form for selecting options using crispy-forms -->
+    <div class="form-container mx-auto">
+        <form method="GET" action="{% url 'training_plans' %}">
+            {% crispy form %}
+        </form>
+    </div>
 </div>
 {% endblock %}

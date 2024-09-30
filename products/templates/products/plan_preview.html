@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block body_class %}plain-background{% endblock %}
+
+{% block extra_title %}
+Training Plan Preview
+{% endblock %}
+
+{% block content %}
+<div class="content-container container text-center">
+    <h1 class="mb-4 text-center">Training Plan Preview</h1>
+
+    <div class="image-container mx-auto"> 
+        <img src="{% url 'generate_plan_image' distance difficulty terrain elevation event_date %}" alt="Generated Training Plan" class="img-fluid mt-3">
+    </div>
+
+    <div class="mt-4 text-center">
+        <a href="{% url 'training_plans' %}" class="btn btn-secondary">Go Back to Selection</a>
+    </div>
+</div>
+{% endblock %}

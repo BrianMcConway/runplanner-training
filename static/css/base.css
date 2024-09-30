@@ -22,29 +22,8 @@ body {
     font-family: 'Lato';
 }
 
-/* from Bulma */
-.icon {
-    align-items: center;
-    display: inline-flex;
-    justify-content: center;
-    height: 1.5rem;
-    width: 1.5rem;
-}
-
-.logo-font {
-    text-transform: uppercase;
-}
-
-.main-logo-link {
-    width: fit-content;
-}
-
-.check-out-plans-button {
-    background: black;
-    color: white;
-    min-width: 260px;
-}
-
+/* Buttons */
+.check-out-plans-button,
 .btn-black {
     background: black;
     color: white;
@@ -60,54 +39,37 @@ body {
     color: white;
 }
 
-.text-black {
-    color: #000 !important;
+/* Ensure uniform form field size across all screen sizes */
+.form-container {
+    max-width: 400px; /* Fixed width for form container */
+    width: 100%; 
+    margin: 0 auto;
 }
 
-.border-black {
-    border: 1px solid black !important;
+form .form-group {
+    width: 100%; /* Full width inside the container */
+}
+
+input, select, .btn-primary {
+    width: 100%; /* Ensure all form inputs, select, and button take full width of the container */
+    max-width: 100%; /* Prevents overflow */
+}
+
+/* Ensure proper spacing */
+input, select {
+    margin-bottom: 15px;
 }
 
 /* Media Queries */
 
-/* Slightly larger container on xl screens */
-@media (min-width: 1200px) {
-  .container {
-    max-width: 80%;
-  }
-}
-
-/* fixed top navbar only on medium and up */
-@media (min-width: 992px) {
-    .fixed-top-desktop-only {
-        position: fixed;
-        top: 0;
-        right: 0;
-        left: 0;
-        z-index: 1030;
-    }
-
-    .header-container {
-        padding-top: 164px;
+/* Full width on smaller screens */
+@media (max-width: 576px) {
+    .form-container {
+        max-width: 100%;
     }
 }
 
-/* Products page */
-/* Add padding to the top to avoid overlap with the fixed header */
+/* Products page - avoid overlap with fixed header */
 .content-container {
     padding-top: 150px;
-}
-
-/* Custom width for form elements */
-.custom-width {
-    width: 250px; /* Adjust this as per your desired width */
-    max-width: 100%;
-}
-
-/* Center align the form fields */
-form .input-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
 }
