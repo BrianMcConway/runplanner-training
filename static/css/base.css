@@ -38,7 +38,7 @@ body {
 /* Buttons */
 .check-out-plans-button,
 .btn-black {
-    background: rgb(48, 46, 46);
+    background: #302e2e;
     color: white;
 }
 
@@ -81,11 +81,6 @@ input, select {
     }
 }
 
-/* Products page - avoid overlap with fixed header */
-.content-container {
-    padding-top: 150px;
-}
-
 /* Style for the Add to Basket button */
 .add-to-basket {
     width: fit-content;
@@ -97,4 +92,21 @@ input, select {
 
 .add-to-basket:hover {
     background-color: #0056b3;
+}
+
+/* Move hamburger away from the left edge */
+.navbar-toggler {
+    margin-left: 10px;
+}
+
+/* Search bar narrow across all views */
+.form-control {
+    max-width: 400px;
+    width: 100%;
+}
+
+/* Center search bar */
+.input-group {
+    width: 100%;
+    justify-content: center; 
 }
