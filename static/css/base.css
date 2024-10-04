@@ -110,3 +110,12 @@ input, select {
     width: 100%;
     justify-content: center; 
 }
+
+/* Adjust margin between account and basket icons */
+#account-icon {
+    margin-right: 80px;
+}
+
+#basket-icon {
+    margin-left: 70px;
+}
