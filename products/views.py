@@ -33,26 +33,29 @@ def training_plans(request):
         'form': form,
     })
 
-# Generate dynamic training plan image with 'SAMPLE' text
+# Generate dynamic training plan image with 'SAMPLE' text and price
 def generate_plan_image(request, distance, difficulty, terrain, elevation, event_date):
+    # Set a static price for now (e.g., €15 for demonstration)
+    price = 15.00
+
     # Create a new image with hex background color
     img = Image.new('RGB', (600, 400), color='#496D89')  # Increased the image size for more space
     draw = ImageDraw.Draw(img)
 
     try:
-        # Try loading fonts
-        font = ImageFont.truetype("arial.ttf", 20)  # Standard font for plan details
-        sample_font = ImageFont.truetype("arial.ttf", 50)  # Larger font for 'SAMPLE'
+        # Try loading fonts (replace 'arial.ttf' with a more reliable font like DejaVuSans.ttf)
+        font = ImageFont.truetype("DejaVuSans.ttf", 20)  # Standard font for plan details
+        price_font = ImageFont.truetype("DejaVuSans.ttf", 30)  # Larger font for the price
+        sample_font = ImageFont.truetype("DejaVuSans.ttf", 50)  # Larger font for 'SAMPLE'
     except IOError:
         # Use default font if custom font fails
         font = ImageFont.load_default()
+        price_font = ImageFont.load_default()  # Fallback for price
         sample_font = ImageFont.load_default()
 
     # Add 'SAMPLE' text prominently in the center of the image
-    # Use textbbox to calculate text size
     sample_bbox = draw.textbbox((0, 0), "SAMPLE", font=sample_font)
     text_width = sample_bbox[2] - sample_bbox[0]  # Calculate the width
-    text_height = sample_bbox[3] - sample_bbox[1]  # Calculate the height
     sample_x = (img.width - text_width) // 2  # Center 'SAMPLE' horizontally
     sample_y = 20  # Position 'SAMPLE' near the top
     draw.text((sample_x, sample_y), "SAMPLE", font=sample_font, fill=(255, 255, 255))
@@ -64,6 +67,12 @@ def generate_plan_image(request, distance, difficulty, terrain, elevation, event
     draw.text((10, 240), f"Terrain: {terrain}", font=font, fill=(255, 255, 255))
     draw.text((10, 270), f"Elevation: {elevation}", font=font, fill=(255, 255, 255))
     draw.text((10, 300), f"Event Date: {event_date}", font=font, fill=(255, 255, 255))  # Date in dd-mm-yyyy format
+
+    # Handle Euro symbol for default font
+    euro_symbol = "€" if font.getmask("€") else "EUR"  # Check if the font supports Euro symbol
+
+    # Add the price to the image with a larger font
+    draw.text((10, 340), f"Price: {euro_symbol}{price:.2f}", font=price_font, fill=(255, 255, 255))
 
     # Save the image to a buffer
     buffer = io.BytesIO()
