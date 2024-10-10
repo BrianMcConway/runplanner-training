@@ -22,6 +22,7 @@ class TrainingPlan(models.Model):
     TERRAIN_CHOICES = [
         ('road', 'Road'),
         ('trail', 'Trail'),
+        ('mixed', 'Mixed'),
     ]
 
     ELEVATION_CHOICES = [
@@ -56,9 +57,22 @@ class TrainingPlan(models.Model):
     elevation = models.CharField(choices=ELEVATION_CHOICES, max_length=20)
     event_date = models.DateField(null=True, blank=True)
 
-    file = models.FileField(upload_to='plans/', default='default_plans/default_plan.pdf')
-    sample_file = models.FileField(upload_to='samples/', default='default_samples/default_sample.pdf')
-    image = models.ImageField(upload_to='images/', default='default_images/default_image.jpg')
-
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.distance}, {self.difficulty}, {self.terrain}, {self.elevation})"
+
+    # Helper method to calculate the price
+    def calculate_price(self):
+        base_price = 15  # Starting base price
+        difficulty_increment = 3
+        distance_increment = {
+            '5k': 0, '10k': 3, 'half_marathon': 6,
+            'marathon': 9, '50k': 12, '80k': 15,
+            '100k': 18, '160k': 21, '200k': 24,
+        }
+
+        price = base_price + distance_increment.get(self.distance, 0)
+        if self.difficulty == 'intermediate':
+            price += difficulty_increment
+        elif self.difficulty == 'advanced':
+            price += 2 * difficulty_increment
+        return price

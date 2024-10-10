@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block body_class %}plain-background{% endblock %}
 
@@ -10,10 +11,20 @@ Training Plan Preview
 <div class="content-container container text-center">
     <h1 class="mb-4 text-center">Training Plan Preview</h1>
 
-    <!-- Center the image -->
-    <div class="image-container mx-auto">
-        <img src="{% url 'generate_plan_image' distance difficulty terrain elevation event_date %}" alt="Generated Training Plan" class="img-fluid mt-3">
+    <!-- Add the Sample Image for Training Plan from the Media Directory -->
+    <div class="mb-4">
+        <!-- Ensure this uses MEDIA_URL to serve the media file correctly -->
+        <img src="{{ MEDIA_URL }}training-plan-sample-test.jpg" alt="Training Plan Sample" class="img-fluid rounded" style="max-width: 500px;">
     </div>
+
+    <ul class="list-unstyled">
+        <li><strong>Distance:</strong> {{ distance }}</li>
+        <li><strong>Difficulty:</strong> {{ difficulty }}</li>
+        <li><strong>Terrain:</strong> {{ terrain }}</li>
+        <li><strong>Elevation:</strong> {{ elevation }}</li>
+        <li><strong>Event Date:</strong> {{ event_date }}</li>
+        <li><strong>Price:</strong> €{{ price|floatformat:2 }}</li>  <!-- Display price here -->
+    </ul>
 
     <!-- Button to go back -->
     <div class="mt-4 text-center">
@@ -22,7 +33,11 @@ Training Plan Preview
 
     <!-- Add to Basket Button -->
     <div class="mt-4 text-center">
-        <a href="{% url 'basket' distance difficulty terrain elevation event_date %}" class="btn btn-primary btn-lg add-to-basket">Add to Basket</a>
+        {% if distance and difficulty and terrain and elevation and event_date %}
+            <a href="{% url 'add_to_basket' distance difficulty terrain elevation event_date %}" class="btn btn-primary btn-lg add-to-basket">Add to Basket</a>
+        {% else %}
+            <p class="text-danger">Missing plan details. Please go back and select a training plan.</p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

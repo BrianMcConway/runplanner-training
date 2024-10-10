@@ -1,10 +1,7 @@
 from django.shortcuts import render, redirect
-from PIL import Image, ImageDraw, ImageFont
-import io
-from django.http import HttpResponse
 from .forms import TrainingPlanFilterForm
 from django.utils.dateformat import format as date_format
-from django.utils import timezone
+from .models import TrainingPlan
 
 # Helper function to calculate price based on distance and difficulty
 def calculate_price(distance, difficulty):
@@ -31,7 +28,7 @@ def calculate_price(distance, difficulty):
 # View for selecting the training plan
 def training_plans(request):
     form = TrainingPlanFilterForm(request.GET or None)
-    
+
     # Validate form data using Django's built-in validation
     if form.is_valid():
         distance = form.cleaned_data.get('distance')
@@ -40,15 +37,24 @@ def training_plans(request):
         elevation = form.cleaned_data.get('elevation')
         event_date = form.cleaned_data.get('event_date')
 
-        # Format the date in a URL-safe format (dd-mm-yyyy)
-        formatted_event_date = date_format(event_date, 'd-m-Y')
+        # Capitalize difficulty and terrain values for proper display
+        difficulty = difficulty.capitalize() if difficulty else difficulty
+        terrain = terrain.capitalize() if terrain else terrain
+
+        # Convert distance to readable version
+        distance_choices = dict(TrainingPlan.DISTANCE_CHOICES)
+        distance_display = distance_choices.get(distance, distance)  # Get the readable value
+
+        # Calculate price, but do not store it in the session yet
+        price = calculate_price(distance, difficulty)
 
         return render(request, 'products/plan_preview.html', {
-            'distance': distance,
+            'distance': distance_display,
             'difficulty': difficulty,
             'terrain': terrain,
             'elevation': elevation,
-            'event_date': formatted_event_date,  # Use URL-safe format
+            'event_date': date_format(event_date, 'd-m-Y'),  # Use URL-safe format
+            'price': price,
         })
 
     # Render the form with validation errors if not valid
@@ -56,72 +62,59 @@ def training_plans(request):
         'form': form,
     })
 
-# Generate dynamic training plan image with 'SAMPLE' text
-def generate_plan_image(request, distance, difficulty, terrain, elevation, event_date):
-    # Calculate the price using the helper function
+# View to handle adding a training plan to the basket
+def add_to_basket(request, distance, difficulty, terrain, elevation, event_date):
+    # Capitalize difficulty and terrain before storing in session
+    difficulty = difficulty.capitalize() if difficulty else difficulty
+    terrain = terrain.capitalize() if terrain else terrain
+
+    # Store the values in the session when the user clicks 'Add to Basket'
+    request.session['distance'] = distance
+    request.session['difficulty'] = difficulty
+    request.session['terrain'] = terrain
+    request.session['elevation'] = elevation
+    request.session['event_date'] = event_date
+
+    # Calculate the price based on the distance and difficulty, and store it
     price = calculate_price(distance, difficulty)
+    request.session['grand_total'] = price
 
-    # Capitalize the first letter of difficulty and terrain
-    difficulty = difficulty.title()
-    terrain = terrain.title()
-
-    # Create a new image with hex background color
-    img = Image.new('RGB', (600, 400), color='#496D89')
-    draw = ImageDraw.Draw(img)
-
-    try:
-        # Try loading fonts
-        font = ImageFont.truetype("DejaVuSans.ttf", 20)
-        price_font = ImageFont.truetype("DejaVuSans.ttf", 30)
-        sample_font = ImageFont.truetype("DejaVuSans.ttf", 50)
-    except IOError:
-        # Use default font if custom font fails
-        font = ImageFont.load_default()
-        price_font = ImageFont.load_default()
-        sample_font = ImageFont.load_default()
-
-    # Add 'SAMPLE' text prominently in the center of the image
-    sample_bbox = draw.textbbox((0, 0), "SAMPLE", font=sample_font)
-    text_width = sample_bbox[2] - sample_bbox[0]
-    sample_x = (img.width - text_width) // 2
-    sample_y = 20
-    draw.text((sample_x, sample_y), "SAMPLE", font=sample_font, fill=(255, 255, 255))
-
-    # Add selected plan details lower down
-    draw.text((10, 150), f"Training Plan", font=font, fill=(255, 255, 255))
-    draw.text((10, 180), f"Distance: {distance}", font=font, fill=(255, 255, 255))
-    draw.text((10, 210), f"Difficulty: {difficulty}", font=font, fill=(255, 255, 255))
-    draw.text((10, 240), f"Terrain: {terrain}", font=font, fill=(255, 255, 255))
-    draw.text((10, 270), f"Elevation: {elevation}", font=font, fill=(255, 255, 255))
-    draw.text((10, 300), f"Event Date: {event_date}", font=font, fill=(255, 255, 255))  # Date in dd-mm-yyyy format
-    # Handle Euro symbol for default font
-    euro_symbol = "€" if font.getmask("€") else "EUR"  # Check if the font supports Euro symbol
-    # Add the price to the image with a larger font
-    draw.text((10, 340), f"Price: {euro_symbol}{price:.2f}", font=price_font, fill=(255, 255, 255))
-
-    # Save the image to a buffer
-    buffer = io.BytesIO()
-    img.save(buffer, format='PNG')
-    buffer.seek(0)
-
-    # Return the image as an HTTP response
-    return HttpResponse(buffer, content_type='image/png')
+    # Redirect the user to the basket page after adding the plan
+    return redirect('basket')
 
 # View to handle the basket where the user confirms purchasing a training plan
-def basket(request, distance, difficulty, terrain, elevation, event_date):
-    # Calculate the price using the same logic
-    price = calculate_price(distance, difficulty)
+def basket(request):
+    # Retrieve values from the session
+    distance = request.session.get('distance')
+    difficulty = request.session.get('difficulty')
+    terrain = request.session.get('terrain')
+    elevation = request.session.get('elevation')
+    event_date = request.session.get('event_date')
+    price = request.session.get('grand_total', None)  # Get the price, default to None if not set
 
-    # Capitalize the first letter of difficulty and terrain
-    difficulty = difficulty.title()
-    terrain = terrain.title()
+    # Check if the basket is empty (i.e., no grand_total set)
+    if not price:
+        # If the price isn't set, assume the basket is empty
+        return render(request, 'products/basket.html', {
+            'message': 'Your basket is empty.',
+        })
 
-    # Render the basket.html
+    # If there's a price, show the basket details
     return render(request, 'products/basket.html', {
         'distance': distance,
-        'difficulty': difficulty,  # Capitalized Difficulty
-        'terrain': terrain,  # Capitalized Terrain
+        'difficulty': difficulty,
+        'terrain': terrain,
         'elevation': elevation,
         'event_date': event_date,
-        'price': price,  # Pass the calculated price to the template
+        'price': price,
     })
+
+# View to remove items from the basket by clearing the session
+def remove_from_basket(request):
+    # Clear specific session keys related to the basket
+    keys_to_clear = ['distance', 'difficulty', 'terrain', 'elevation', 'event_date', 'grand_total']
+    for key in keys_to_clear:
+        request.session.pop(key, None)  # Safely remove the keys if they exist
+
+    # Redirect back to the basket page after clearing
+    return redirect('basket')

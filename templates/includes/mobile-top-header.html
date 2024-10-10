@@ -1,11 +1,10 @@
 <div class="dropdown-menu border-0 w-100 p-3 rounded-0 my-0" aria-labelledby="mobile-nav">
-        <a class="dropdown-item" href="{% url 'home' %}">Home</a>
-        <a class="dropdown-item" href="{% url 'training_plans' %}">Training Plans</a>
-        <a class="dropdown-item" href="#">Nutrition</a>
-        <a class="dropdown-item" href="#">About</a>
-        <a class="dropdown-item" href="#">Contact Us</a>
-    </div>
-</li>
+    <a class="dropdown-item" href="{% url 'home' %}">Home</a>
+    <a class="dropdown-item" href="{% url 'training_plans' %}">Training Plans</a>
+    <a class="dropdown-item" href="#">Nutrition</a>
+    <a class="dropdown-item" href="#">About</a>
+    <a class="dropdown-item" href="#">Contact Us</a>
+</div>
 
 <li class="list-inline-item">
     <a class="text-black nav-link d-block d-lg-none" href="#" id="mobile-search" data-bs-toggle="dropdown" aria-expanded="false">
@@ -50,12 +49,12 @@
 </li>
 
 <li class="list-inline-item">
-    <a class="{% if grand_total %}text-primary font-weight-bold{% else %}text-black{% endif %} nav-link d-block d-lg-none" href="#">
+    <a class="text-black nav-link d-block d-lg-none" href="{% url 'basket' %}">
         <div class="text-center">
             <i class="fas fa-shopping-bag fa-lg"></i>
             <p class="my-0">
-                {% if grand_total %}
-                    €{{ grand_total|floatformat:2 }}
+                {% if request.session.grand_total %}
+                    €{{ request.session.grand_total|floatformat:2 }}
                 {% else %}
                     €0.00
                 {% endif %}
