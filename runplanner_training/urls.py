@@ -24,4 +24,6 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('', include('home.urls')),
     path('products/', include('products.urls')),
+    path('basket/', include('basket.urls', namespace='basket')),  # Add namespace for basket
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

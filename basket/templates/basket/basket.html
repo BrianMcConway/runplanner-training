@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block body_class %}plain-background{% endblock %}
+
+{% block extra_title %}
+    Your Basket
+{% endblock %}
+
+{% block content %}
+    <div class="content-container container text-center">
+        <h1 class="mb-4 text-center">Basket</h1>
+
+        {% if training_plans %}
+            <ul class="list-unstyled">
+                {% for plan in training_plans %}
+                    <li>
+                        <strong>Distance:</strong> {{ plan.distance }}<br>
+                        <strong>Difficulty:</strong> {{ plan.difficulty }}<br>
+                        <strong>Terrain:</strong> {{ plan.terrain }}<br>
+                        <strong>Elevation:</strong> {{ plan.elevation }}<br>
+                        <strong>Event Date:</strong> {{ plan.event_date }}<br>
+                        <strong>Price:</strong> €{{ plan.price|floatformat:2 }}<br>
+
+                        <!-- Remove item link -->
+                        <a href="{% url 'basket:remove_from_basket' 'training_plan' plan.id %}" class="btn btn-danger btn-sm mt-2">Remove</a>
+                    </li>
+                    <hr>
+                {% endfor %}
+            </ul>
+
+            <h3>Total: €{{ total_price|floatformat:2 }}</h3>
+
+            <!-- Checkout and Empty Basket buttons -->
+            <a href="#" class="btn btn-success">Proceed to Checkout</a>
+            <a href="{% url 'basket:empty_basket' %}" class="btn btn-danger">Empty Basket</a>
+        
+        {% else %}
+            <p>Your basket is empty.</p>
+        {% endif %}
+    </div>
+{% endblock %}

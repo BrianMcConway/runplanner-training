@@ -34,7 +34,7 @@ Training Plan Preview
     <!-- Add to Basket Button -->
     <div class="mt-4 text-center">
         {% if distance and difficulty and terrain and elevation and event_date %}
-            <a href="{% url 'add_to_basket' distance difficulty terrain elevation event_date %}" class="btn btn-primary btn-lg add-to-basket">Add to Basket</a>
+        <a href="{% url 'basket:add_to_basket' distance difficulty terrain elevation event_date %}" class="btn btn-primary btn-lg add-to-basket">Add to Basket</a>
         {% else %}
             <p class="text-danger">Missing plan details. Please go back and select a training plan.</p>
         {% endif %}

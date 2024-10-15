@@ -1,4 +1,5 @@
 {% load static %}
+{% load basket_extras %}
 <!doctype html>
 <html lang="en">
 
@@ -88,21 +89,21 @@
                         </div>
                     </li>
                     <li class="list-inline-item" id="basket-icon">
-                        <a class="text-black nav-link" href="{% url 'basket' %}">
+                        <a class="text-black nav-link" href="{% url 'basket:show_basket' %}">
                             <div class="text-center">
-                                <div>
-                                    <i class="fas fa-shopping-bag fa-lg"></i>
-                                </div>
+                                <i class="fas fa-shopping-bag fa-lg"></i>
                                 <p class="my-0">
-                                    {% if request.session.grand_total %}
-                                        €{{ request.session.grand_total|floatformat:2 }}
-                                    {% else %}
-                                        €0.00
-                                    {% endif %}
+                                    {% with basket=request.session.basket %}
+                                        {% if basket and basket.training_plans|length > 0 %}
+                                            €{{ basket|calc_total_price|floatformat:2 }}
+                                        {% else %}
+                                            €0.00
+                                        {% endif %}
+                                    {% endwith %}
                                 </p>
                             </div>
                         </a>
-                    </li>
+                    </li>                      
                 </ul>
             </div>
         </div>

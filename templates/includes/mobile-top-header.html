@@ -1,3 +1,5 @@
+{% load basket_extras %}
+
 <div class="dropdown-menu border-0 w-100 p-3 rounded-0 my-0" aria-labelledby="mobile-nav">
     <a class="dropdown-item" href="{% url 'home' %}">Home</a>
     <a class="dropdown-item" href="{% url 'training_plans' %}">Training Plans</a>
@@ -49,16 +51,20 @@
 </li>
 
 <li class="list-inline-item">
-    <a class="text-black nav-link d-block d-lg-none" href="{% url 'basket' %}">
+    <a class="text-black nav-link d-block d-lg-none" href="{% url 'basket:show_basket' %}">
         <div class="text-center">
             <i class="fas fa-shopping-bag fa-lg"></i>
             <p class="my-0">
-                {% if request.session.grand_total %}
-                    €{{ request.session.grand_total|floatformat:2 }}
-                {% else %}
-                    €0.00
-                {% endif %}
+                {% with basket=request.session.basket %}
+                    {% if basket.training_plans|length > 0 %}
+                        €{{ basket|calc_total_price|floatformat:2 }}
+                    {% else %}
+                        €0.00
+                    {% endif %}
+                {% endwith %}
             </p>
         </div>
     </a>
 </li>
+
+

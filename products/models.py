@@ -76,3 +76,13 @@ class TrainingPlan(models.Model):
         elif self.difficulty == 'advanced':
             price += 2 * difficulty_increment
         return price
+
+class NutritionProduct(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+    brand = models.CharField(max_length=100)
+    weight = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"{self.name} ({self.brand})"
