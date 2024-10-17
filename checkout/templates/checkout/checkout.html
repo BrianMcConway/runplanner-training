@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block body_class %}plain-background{% endblock %}
+
+{% block content %}
+    <div class="container form-container">
+        <h1>Checkout</h1>
+
+        <!-- Display any messages or form errors -->
+        {% if messages %}
+            <ul class="alert alert-danger">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <!-- Checkout and Payment Form Combined -->
+        <form id="payment-form" method="post" action="{% url 'checkout:checkout_view' %}">
+            {% csrf_token %}
+            {{ form|crispy }}
+
+            <div id="card-element">
+                <!-- Stripe Card element will be inserted here -->
+            </div>
+            <div id="card-errors" role="alert"></div> <!-- Error message will show here -->
+
+            <button type="submit" class="btn btn-primary btn-lg mt-3">Pay Now</button>
+        </form>
+    </div>
+
+    <!-- Include Stripe JS -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        // Initialize Stripe with the public key from Django settings
+        var stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");
+
+        // Create an instance of Stripe Elements
+        var elements = stripe.elements();
+
+        // Create and mount the card input field
+        var card = elements.create('card');
+        card.mount('#card-element');
+
+        // Handle real-time validation errors from the card input field
+        card.on('change', function(event) {
+            var displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+
+        // Handle form submission
+        var form = document.getElementById('payment-form');
+        var clientSecret = "{{ client_secret }}";  // Stripe PaymentIntent client secret
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Confirm card payment
+            stripe.confirmCardPayment(clientSecret, {
+                payment_method: {
+                    card: card,
+                }
+            }).then(function(result) {
+                if (result.error) {
+                    // Display error to the user
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                } else {
+                    // Payment succeeded, redirect to success page
+                    if (result.paymentIntent.status === 'succeeded') {
+                        window.location.href = "{% url 'checkout:payment_success' %}";
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

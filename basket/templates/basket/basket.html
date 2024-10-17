@@ -31,7 +31,7 @@
             <h3>Total: €{{ total_price|floatformat:2 }}</h3>
 
             <!-- Checkout and Empty Basket buttons -->
-            <a href="#" class="btn btn-success">Proceed to Checkout</a>
+            <a href="{% url 'checkout:checkout_view' %}" class="btn btn-success">Proceed to Checkout</a>
             <a href="{% url 'basket:empty_basket' %}" class="btn btn-danger">Empty Basket</a>
         
         {% else %}

@@ -18,25 +18,26 @@ def add_to_basket(request, distance, difficulty, terrain, elevation, event_date)
             'terrain': terrain,
             'elevation': elevation,
             'event_date': event_date,
-            'price': calculate_price(distance, difficulty),  # Calculate price based on distance and difficulty
+            'price': calculate_price(distance, difficulty),
+            'quantity': 1  # Default quantity
         })
 
     # Update session with the new basket
     request.session['basket'] = basket
-    request.session.modified = True  # Ensure the session is saved
+    request.session.modified = True
 
     return redirect('basket:show_basket')
 
-# Show the basket (retrieves session details)
+
+# Show the basket
 def show_basket(request):
-    # Retrieve the basket from the session, default to an empty basket
+    # Retrieve the basket from the session
     basket = request.session.get('basket', {'training_plans': []})
     training_plans = basket.get('training_plans', [])
 
     # Calculate the total price
-    total_price = sum(float(item['price']) for item in training_plans)
+    total_price = sum(float(item['price']) * item['quantity'] for item in training_plans)
 
-    # Pass the training plans and total price to the template
     context = {
         'training_plans': training_plans,
         'total_price': total_price,
@@ -44,28 +45,31 @@ def show_basket(request):
 
     return render(request, 'basket/basket.html', context)
 
+
 # Remove an item from the basket
 def remove_from_basket(request, item_type, item_id):
     basket = request.session.get('basket', {'training_plans': []})
 
-    # Remove the training plan from the basket
+    # Remove the training plan from the basket by ID
     if item_type == 'training_plan':
         basket['training_plans'] = [item for item in basket['training_plans'] if item['id'] != item_id]
 
-    # Update the session with the modified basket
+    # Update session with the modified basket
     request.session['basket'] = basket
-    request.session.modified = True  # Ensure session changes are saved
+    request.session.modified = True
 
     return redirect('basket:show_basket')
 
-# Empty the basket (clears all items)
+
+# Empty the basket
 def empty_basket(request):
     request.session['basket'] = {'training_plans': []}  # Clear the basket
-    request.session.modified = True  # Ensure session changes are saved
+    request.session.modified = True
 
     return redirect('basket:show_basket')
 
-# Helper function to calculate price based on distance and difficulty
+
+# Helper function to calculate the price based on distance and difficulty
 def calculate_price(distance, difficulty):
     base_price = 15
     difficulty_increment = 3
@@ -80,6 +84,7 @@ def calculate_price(distance, difficulty):
         '160k': 21,
         '200k': 24,
     }
+
     price = base_price + distance_increment.get(distance, 0)
 
     if difficulty == 'intermediate':

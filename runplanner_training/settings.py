@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'home',
     'products',
     'basket',
+    'checkout',
     'crispy_forms',
     'crispy_bootstrap5',
 ]
@@ -164,3 +165,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = [
     'https://8000-brianmcconw-runplannert-glms1bohfnx.ws.codeinstitute-ide.net'
 ]
+
+STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
