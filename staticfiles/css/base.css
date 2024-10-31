@@ -1,0 +1,121 @@
+/* Background for all pages */
+html {
+    height: 100%;
+}
+
+/* Background for pages with images */
+.default-page {
+    background: url('/media/running.jpg') no-repeat center center fixed;
+    background-size: cover;
+    height: calc(100vh - 164px);
+    color: #555;
+}
+
+/* Repositioning background image on smaller screens */
+@media (max-width: 992px) {
+    .default-page {
+        background-position: 70% center;
+    }
+}
+
+@media (max-width: 576px) {
+    .default-page {
+        background-position: 80% center;
+    }
+}
+
+/* Background for plain color pages */
+.plain-background {
+    background-color: #f0f0f0;
+    height: calc(100vh - 164px);
+    color: #555;
+}
+
+body {
+    font-family: 'Lato';
+}
+
+/* Buttons */
+.check-out-plans-button,
+.btn-black {
+    background: #302e2e;
+    color: white;
+}
+
+.check-out-plans-button:hover,
+.check-out-plans-button:active,
+.check-out-plans-button:focus,
+.btn-black:hover,
+.btn-black:active,
+.btn-black:focus {
+    background: #222;
+    color: white;
+}
+
+/* Ensure uniform form field size across all screen sizes */
+.form-container {
+    max-width: 400px;
+    width: 100%; 
+    margin: 0 auto;
+}
+
+/* Full width inside the container */
+form .form-group {
+    width: 100%; 
+}
+
+input, select, .btn-primary {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Ensure proper spacing */
+input, select {
+    margin-bottom: 15px;
+}
+
+/* Full width on smaller screens */
+@media (max-width: 576px) {
+    .form-container {
+        max-width: 100%;
+    }
+}
+
+/* Style for the Add to Basket button */
+.add-to-basket {
+    width: fit-content;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    background-color: #007bff;
+    color: white;
+}
+
+.add-to-basket:hover {
+    background-color: #0056b3;
+}
+
+/* Move hamburger away from the left edge */
+.navbar-toggler {
+    margin-left: 10px;
+}
+
+/* Search bar narrow across all views */
+.form-control {
+    max-width: 400px;
+    width: 100%;
+}
+
+/* Center search bar */
+.input-group {
+    width: 100%;
+    justify-content: center; 
+}
+
+/* Adjust margin between account and basket icons */
+#account-icon {
+    margin-right: 80px;
+}
+
+#basket-icon {
+    margin-left: 70px;
+}
