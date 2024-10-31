@@ -175,6 +175,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = [
     'https://8000-brianmcconw-runplannert-glms1bohfnx.ws.codeinstitute-ide.net'
+    '.herokuapp.com',
 ]
 
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
