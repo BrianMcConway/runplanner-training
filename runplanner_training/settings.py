@@ -28,7 +28,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['8000-brianmcconw-runplannert-glms1bohfnx.ws.codeinstitute-ide.net']
+ALLOWED_HOSTS = ['8000-brianmcconw-runplannert-glms1bohfnx.ws.codeinstitute-ide.net',
+                 '.herokuapp.com',
+]
 
 
 # Application definition
@@ -175,7 +177,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = [
     'https://8000-brianmcconw-runplannert-glms1bohfnx.ws.codeinstitute-ide.net'
-    '.herokuapp.com',
+    'https://*.herokuapp.com',
 ]
 
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
