@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block body_class %}plain-background{% endblock %}
+
+{% block extra_title %}Training Plans{% endblock %}
+
+{% block content %}
+<div class="container text-center">
+    <h2>Choose Your Training Plan</h2>
+    
+    <!-- Form for selecting options using crispy-forms -->
+    <div class="form-container mx-auto my-4" style="max-width: 400px;">
+        <form method="GET" action="{% url 'products_v2:training_plans' %}">
+            {% crispy form %}
+        </form>
+    </div>
+
+    {% if preview_plan %}
+        <div class="plan-preview mt-5">
+            <h3>Training Plan Preview: {{ preview_plan.name }}</h3>
+            <img src="{{ MEDIA_URL }}training-plan-sample-test.jpg" alt="Training Plan Sample" class="img-fluid rounded" style="max-width: 500px;">
+            <ul class="list-unstyled mt-3">
+                <li><strong>Distance:</strong> {{ preview_plan.distance }}</li>
+                <li><strong>Difficulty:</strong> {{ preview_plan.difficulty }}</li>
+                <li><strong>Terrain:</strong> {{ preview_plan.terrain }}</li>
+                <li><strong>Elevation:</strong> {{ preview_plan.elevation }}</li>
+                <li><strong>Price:</strong> €{{ preview_plan.price|floatformat:2 }}</li>
+            </ul>
+            <div class="mt-4">
+                <a href="{% url 'basket_v2:add_to_basket' preview_plan.slug %}" class="btn btn-primary btn-lg">Add to Basket</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

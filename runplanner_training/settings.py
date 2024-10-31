@@ -45,9 +45,9 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'home',
-    'products',
-    'basket',
-    'checkout',
+    'products_v2',
+    'basket_v2',
+    'checkout_v2',
     'crispy_forms',
     'crispy_bootstrap5',
 ]
@@ -79,6 +79,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'basket_v2.contexts.basket_contents',
             ],
         },
     },
@@ -168,3 +169,5 @@ CSRF_TRUSTED_ORIGINS = [
 
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
+STRIPE_CURRENCY = 'eur'

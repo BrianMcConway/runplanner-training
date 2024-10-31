@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container form-container">
+    <h1>Checkout</h1>
+
+    {% if messages %}
+        <ul class="alert alert-danger">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <p class="total-amount">Total Amount: €{{ total }}</p>
+
+    <!-- Success message container, hidden by default -->
+    <div id="success-message" class="alert alert-success" style="display: none;">
+        <h4>Thank you for your order!</h4>
+        <p>Your payment was successful. A confirmation email has been sent.</p>
+        <p>Order Number: <span id="order-id"></span></p>
+    </div>
+
+    <!-- Payment form -->
+    <form id="payment-form" method="post" action="{% url 'checkout_v2:checkout' %}">
+        {% csrf_token %}
+        {{ order_form|crispy }}
+
+        <div id="card-element" class="stripe-style-input"></div>
+        <div id="card-errors" role="alert"></div>
+
+        <button type="submit" class="btn btn-primary btn-lg mt-3">Pay Now</button>
+    </form>
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    // Initialize Stripe elements
+    var stripe = Stripe("{{ stripe_public_key }}");
+    var elements = stripe.elements();
+    var card = elements.create('card', {
+        style: {
+            base: {
+                color: "#32325d",
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: "antialiased",
+                fontSize: "16px",
+                "::placeholder": {
+                    color: "#aab7c4"
+                }
+            },
+            invalid: {
+                color: "#fa755a",
+                iconColor: "#fa755a"
+            }
+        }
+    });
+    card.mount("#card-element");
+
+    card.on("change", function(event) {
+        var displayError = document.getElementById("card-errors");
+        displayError.textContent = event.error ? event.error.message : "";
+    });
+
+    // Handle form submission
+    var form = document.getElementById("payment-form");
+
+    form.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        stripe.confirmCardPayment("{{ client_secret }}", {
+            payment_method: { card: card }
+        }).then(function(result) {
+            if (result.error) {
+                document.getElementById("card-errors").textContent = result.error.message;
+            } else if (result.paymentIntent && result.paymentIntent.status === "succeeded") {
+                // Hide the payment form and show the success message
+                form.style.display = "none";
+                document.getElementById("success-message").style.display = "block";
+                document.getElementById("order-id").textContent = "{{ order_id }}"; // Display order ID
+            }
+        });
+    });
+</script>
+{% endblock %}

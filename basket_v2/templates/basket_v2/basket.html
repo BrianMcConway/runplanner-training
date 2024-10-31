@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block body_class %}plain-background{% endblock %}
+{% block extra_title %}Your Basket{% endblock %}
+
+{% block content %}
+    <div class="content-container container text-center">
+        <h1 class="mb-4 text-center">Basket</h1>
+
+        {% if basket %}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in basket %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>€{{ item.price|floatformat:2 }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>€{{ item.price|mul:item.quantity|floatformat:2 }}</td>
+                        <td>
+                            {% if item.slug %}
+                                <a href="{% url 'basket_v2:remove_from_basket' item.slug %}" class="btn btn-danger btn-sm">Remove</a>
+                            {% else %}
+                                <span class="text-danger">Slug Missing</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h3 class="mt-4">Total: €{{ total_price|floatformat:2 }}</h3>
+        
+        <div class="mt-4">
+            <a href="{% url 'checkout_v2:checkout' %}" class="btn btn-success">Proceed to Checkout</a>
+            <a href="{% url 'basket_v2:clear_basket' %}" class="btn btn-danger">Empty Basket</a>
+        </div>
+        {% else %}
+            <p>Your basket is empty.</p>
+        {% endif %}
+    </div>
+{% endblock %}

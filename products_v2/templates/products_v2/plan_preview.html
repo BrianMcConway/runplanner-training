@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body_class %}plain-background{% endblock %}
+
+{% block extra_title %}Training Plan Preview{% endblock %}
+
+{% block content %}
+<div class="container text-center">
+    <h1>Training Plan Preview</h1>
+
+    <div class="mb-4">
+        <img src="{{ MEDIA_URL }}training-plan-sample-test.jpg" alt="Training Plan Sample" class="img-fluid rounded" style="max-width: 500px;">
+    </div>
+
+    <ul class="list-unstyled">
+        <li><strong>Distance:</strong> {{ plan.distance }}</li>
+        <li><strong>Difficulty:</strong> {{ plan.difficulty }}</li>
+        <li><strong>Terrain:</strong> {{ plan.terrain }}</li>
+        <li><strong>Elevation:</strong> {{ plan.elevation }}</li>
+        <li><strong>Price:</strong> €{{ plan.price|floatformat:2 }}</li>
+    </ul>
+
+    <div class="mt-4">
+        <a href="{% url 'products_v2:training_plans' %}" class="btn btn-secondary">Go Back to Selection</a>
+        <a href="{% url 'basket_v2:add_to_basket' plan.slug %}" class="btn btn-primary btn-lg">Add to Basket</a>
+    </div>
+</div>
+{% endblock %}
