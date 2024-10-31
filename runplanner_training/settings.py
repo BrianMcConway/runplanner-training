@@ -176,8 +176,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://8000-brianmcconw-runplannert-glms1bohfnx.ws.codeinstitute-ide.net'
+    'https://8000-brianmcconw-runplannert-glms1bohfnx.ws.codeinstitute-ide.net',
     'https://*.herokuapp.com',
+    'https://runplanner-training.herokuapp.com',
 ]
 
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
