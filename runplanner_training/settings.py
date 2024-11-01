@@ -12,21 +12,16 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 if os.path.isfile('env.py'):
     import env
-import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
+# Security settings
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = [
@@ -35,9 +30,7 @@ ALLOWED_HOSTS = [
     'runplanner-training.herokuapp.com',
 ]
 
-
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -101,11 +94,11 @@ AUTHENTICATION_BACKENDS = [
 
 SITE_ID = 1
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
 
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # Disable email verification during development
 ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True
 ACCOUNT_USERNAME_MIN_LENGTH = 4
 LOGIN_URL = '/accounts/login/'
@@ -113,26 +106,12 @@ LOGIN_REDIRECT_URL = '/'
 
 WSGI_APPLICATION = 'runplanner_training.wsgi.application'
 
-
 # Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-# Default to SQLite for local development
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
 }
 
-# Automatically switch to PostgreSQL if DATABASE_URL is set in the environment
-if os.getenv('DATABASE_URL'):
-    DATABASES['default'] = dj_database_url.parse(os.environ.get('DATABASE_URL'))
-
-
 # Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -148,25 +127,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# Static files settings
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)  # Location of static files for apps
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')     # Collect all static files here for production
@@ -179,8 +146,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = [
