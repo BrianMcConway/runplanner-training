@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 if os.path.isfile('env.py'):
     import env
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,8 +29,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['8000-brianmcconw-runplannert-glms1bohfnx.ws.codeinstitute-ide.net',
-                 '.herokuapp.com',
+ALLOWED_HOSTS = [
+    '8000-brianmcconw-runplannert-glms1bohfnx.ws.codeinstitute-ide.net',
+    '.herokuapp.com',
+    'runplanner-training.herokuapp.com',
 ]
 
 
@@ -114,12 +117,17 @@ WSGI_APPLICATION = 'runplanner_training.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# Default to SQLite for local development
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# Automatically switch to PostgreSQL if DATABASE_URL is set in the environment
+if os.getenv('DATABASE_URL'):
+    DATABASES['default'] = dj_database_url.parse(os.environ.get('DATABASE_URL'))
 
 
 # Password validation
