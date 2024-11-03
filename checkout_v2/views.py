@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from django.shortcuts import render, redirect, HttpResponse
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.conf import settings
@@ -22,50 +22,55 @@ def checkout(request):
             return redirect('products_v2:training_plans')
 
         form_data = {
-            'full_name': request.POST['full_name'],
-            'email': request.POST['email'],
-            'phone_number': request.POST['phone_number'],
-            'country': request.POST['country'],
-            'postcode': request.POST['postcode'],
-            'town_or_city': request.POST['town_or_city'],
-            'street_address1': request.POST['street_address1'],
-            'street_address2': request.POST['street_address2'],
-            'county': request.POST['county'],
+            'full_name': request.POST.get('full_name'),
+            'email': request.POST.get('email'),
+            'phone_number': request.POST.get('phone_number'),
+            'country': request.POST.get('country'),
+            'postcode': request.POST.get('postcode'),
+            'town_or_city': request.POST.get('town_or_city'),
+            'street_address1': request.POST.get('street_address1'),
+            'street_address2': request.POST.get('street_address2'),
+            'county': request.POST.get('county'),
         }
 
         order_form = OrderForm(form_data)
         if order_form.is_valid():
+            # Save the order temporarily
             order = order_form.save(commit=False)
             order.original_basket = json.dumps(basket)
             order.save()
 
-            # Add line items
+            # Add line items to the order
             for item_id, item_data in basket.items():
                 try:
                     product = Product.objects.get(id=item_id)
-                    order_line_item = OrderLineItem(order=order, product=product, quantity=item_data)
+                    order_line_item = OrderLineItem(
+                        order=order,
+                        product=product,
+                        quantity=item_data
+                    )
                     order_line_item.save()
                 except Product.DoesNotExist:
                     messages.error(request, "One of the products in your basket wasn't found.")
-                    order.delete()
+                    order.delete()  # Remove the incomplete order
                     return redirect('basket_v2:show_basket')
 
             # Prepare Stripe payment intent
-            stripe_total = round(order.grand_total * 100)
+            stripe_total = round(order.grand_total * 100)  # Ensure total is correctly calculated
             intent = stripe.PaymentIntent.create(
                 amount=stripe_total,
                 currency=settings.STRIPE_CURRENCY,
                 metadata={
                     'order_id': order.id,
-                    'basket': json.dumps(basket)  # Optional: for reference only
+                    'basket': json.dumps(basket)  # Optional metadata
                 }
             )
 
-            # Save Stripe payment intent ID for later verification
+            # Save Stripe payment intent ID for order verification
             order.stripe_pid = intent.id
             order.save()
 
-            # Temporarily save order ID in the session for confirmation
+            # Temporarily save order ID in session for success page handling
             request.session['order_id'] = order.id
 
             return render(request, 'checkout_v2/checkout.html', {
@@ -76,25 +81,27 @@ def checkout(request):
             })
 
         else:
-            messages.error(request, "Check your information.")
+            messages.error(request, "There was an error with your form. Please double-check your information.")
             return redirect('basket_v2:show_basket')
 
-    # Handle GET requests to retrieve basket contents and create a PaymentIntent
-    else:
+    else:  # Handle GET request
         basket = request.session.get('basket', {})
         if not basket:
             messages.error(request, "Your basket is empty!")
             return redirect('products_v2:training_plans')
 
+        # Calculate the current basket total
         current_basket = basket_contents(request)
         total = current_basket['grand_total']
-        stripe_total = round(total * 100)
+        stripe_total = round(total * 100)  # Stripe expects amount in cents
 
+        # Create a new payment intent for the checkout page
         intent = stripe.PaymentIntent.create(
             amount=stripe_total,
             currency=settings.STRIPE_CURRENCY,
         )
-        order_form = OrderForm()
+
+        order_form = OrderForm()  # Blank form for GET request
 
         return render(request, 'checkout_v2/checkout.html', {
             'order_form': order_form,
@@ -112,6 +119,8 @@ def checkout_success(request):
 
     try:
         order = Order.objects.get(id=order_id)
+        order.is_paid = True
+        order.save()
     except Order.DoesNotExist:
         messages.error(request, "Order not found.")
         return redirect('products_v2:training_plans')
@@ -120,31 +129,6 @@ def checkout_success(request):
     request.session.pop('basket', None)
 
     messages.success(request, f"Thank you for your order! Your order number is {order.id}.")
+    
+    # Redirect to an order complete or summary page
     return redirect('checkout_v2:order_complete', order_id=order.id)
-
-@require_POST
-def stripe_webhook(request):
-    """Listen for Stripe webhooks to confirm payment status and complete the order."""
-    payload = request.body
-    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
-    event = None
-
-    try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
-        )
-    except ValueError as e:
-        return HttpResponse(status=400)
-    except stripe.error.SignatureVerificationError as e:
-        return HttpResponse(status=400)
-
-    # Handle successful payment intent
-    if event['type'] == 'payment_intent.succeeded':
-        payment_intent = event['data']['object']
-        stripe_pid = payment_intent['id']
-        order = Order.objects.filter(stripe_pid=stripe_pid).first()
-        if order:
-            # Mark the order as paid or update any status as necessary
-            order.save()
-
-    return HttpResponse(status=200)

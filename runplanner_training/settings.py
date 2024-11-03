@@ -152,6 +152,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://8000-brianmcconw-runplannert-glms1bohfnx.ws.codeinstitute-ide.net',
     'https://*.herokuapp.com',
     'https://runplanner-training.herokuapp.com',
+    'https://runplanner-training-cfec4c16a60a.herokuapp.com',
 ]
 
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
