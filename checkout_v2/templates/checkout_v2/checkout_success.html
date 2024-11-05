@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container form-container">
+    <h1>Order Confirmation</h1>
+    <div class="alert alert-success">
+        <h4>Thank you for your order!</h4>
+        <p>Your payment was successful. A confirmation email has been sent.</p>
+        <p>Order Number: <strong>{{ order.order_number }}</strong></p>
+    </div>
+    <a href="{% url 'products_v2:training_plans' %}" class="btn btn-primary">Continue Shopping</a>
+</div>
+{% endblock %}

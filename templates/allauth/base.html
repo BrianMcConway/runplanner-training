@@ -24,12 +24,18 @@
         <link rel="stylesheet" href="{% static 'css/base.css' %}">
     {% endblock %}
 
-    <!-- Core JavaScript -->
+    <!-- Core JavaScript Libraries -->
     {% block corejs %}
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+
+        
         <!-- FontAwesome -->
         <script src="https://kit.fontawesome.com/fbc63c20c7.js" crossorigin="anonymous"></script>
+        
         <!-- Bootstrap JS Bundle -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        
         <!-- Stripe Library -->
         <script src="https://js.stripe.com/v3/"></script>
     {% endblock %}

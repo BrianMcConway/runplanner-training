@@ -13,17 +13,19 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+
+# Import environment variables if env.py is present
 if os.path.isfile('env.py'):
     import env
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security settings
 SECRET_KEY = os.environ.get('SECRET_KEY')
+DEBUG = True  # Set to False in production
 
-DEBUG = True
-
+# Allowed Hosts
 ALLOWED_HOSTS = [
     '8000-brianmcconw-runplannert-glms1bohfnx.ws.codeinstitute-ide.net',
     '.herokuapp.com',
@@ -111,6 +113,11 @@ DATABASES = {
     'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
 }
 
+# Session settings
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 1209600  # 2 weeks
+SESSION_SAVE_EVERY_REQUEST = True
+
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -133,21 +140,21 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# Static and Media Files
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)  # Location of static files for apps
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')     # Collect all static files here for production
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)  # Static files directory
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')     # Production static files directory
 
-# Media files settings
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')            # Media files directory
 
-# WhiteNoise configuration to serve static files in production
+# WhiteNoise settings for serving static files in production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# CSRF Trusted Origins
 CSRF_TRUSTED_ORIGINS = [
     'https://8000-brianmcconw-runplannert-glms1bohfnx.ws.codeinstitute-ide.net',
     'https://*.herokuapp.com',
@@ -155,7 +162,34 @@ CSRF_TRUSTED_ORIGINS = [
     'https://runplanner-training-cfec4c16a60a.herokuapp.com',
 ]
 
+# Stripe settings
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
 STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
 STRIPE_CURRENCY = 'eur'
+
+# Security settings for production (optional)
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True  # Redirect all HTTP traffic to HTTPS
+
+# Logging (Optional)
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'error.log'),
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
