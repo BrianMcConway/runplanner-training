@@ -41,7 +41,7 @@
         <h3 class="mt-4">Total: €{{ total_price|floatformat:2 }}</h3>
         
         <div class="mt-4">
-            <a href="{% url 'checkout_v2:checkout' %}" class="btn btn-success">Proceed to Checkout</a>
+            <a href="{% url 'checkout_v2:checkout' %}">Proceed to Checkout</a>
             <a href="{% url 'basket_v2:clear_basket' %}" class="btn btn-danger">Empty Basket</a>
         </div>
         {% else %}

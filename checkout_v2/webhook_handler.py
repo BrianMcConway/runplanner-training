@@ -1,12 +1,9 @@
-# checkout_v2/webhook_handler.py
-
 import json
 import stripe
 from django.http import HttpResponse
 from .models import Order
 import logging
 
-# Set up logger
 logger = logging.getLogger(__name__)
 
 class StripeWH_Handler:
@@ -28,14 +25,12 @@ class StripeWH_Handler:
         basket = intent.metadata.basket if 'basket' in intent.metadata else None
         save_info = intent.metadata.save_info if 'save_info' in intent.metadata else None
 
-        # Log the event
         logger.info(f"PaymentIntent succeeded for PID: {pid}")
 
-        # Fetch the order using the payment intent ID
         try:
             order = Order.objects.get(stripe_pid=pid)
             if order:
-                order.is_paid = True  # Ensure `is_paid` field exists in Order model
+                order.is_paid = True
                 order.save()
                 logger.info(f"Order {order.id} marked as paid")
                 return HttpResponse(

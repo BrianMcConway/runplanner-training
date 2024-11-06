@@ -1,19 +1,18 @@
 from django.db import models
 
 class Product(models.Model):
-    # Product category choices for differentiating types
+    """Model representing a product, which can be a training plan or nutrition item."""
+
     CATEGORY_CHOICES = [
         ('training_plan', 'Training Plan'),
         ('nutrition', 'Nutrition'),
     ]
 
-    # General fields applicable to all product categories
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='training_plan')
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     slug = models.SlugField(unique=True)
 
-    # Training Plan specific fields, can remain blank for non-training plan products
     DISTANCE_CHOICES = [
         ('5k', '5k'),
         ('10k', '10k'),
@@ -58,11 +57,11 @@ class Product(models.Model):
         ('9500-10000m', '9500-10000m'),
     ]
 
-    # Specific fields for training plans
     distance = models.CharField(max_length=20, choices=DISTANCE_CHOICES, blank=True, null=True)
     difficulty = models.CharField(max_length=20, choices=DIFFICULTY_CHOICES, blank=True, null=True)
     terrain = models.CharField(max_length=20, choices=TERRAIN_CHOICES, blank=True, null=True)
     elevation = models.CharField(max_length=20, choices=ELEVATION_CHOICES, blank=True, null=True)
 
     def __str__(self):
+        """String representation of the Product."""
         return self.name
