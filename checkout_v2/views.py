@@ -7,10 +7,12 @@ from products_v2.models import Product
 import json
 import logging
 import uuid
-import stripe  # Stripe library for handling payments
+import stripe
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 
 logger = logging.getLogger(__name__)
-stripe.api_key = settings.STRIPE_SECRET_KEY  # Set Stripe API key from settings
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def checkout(request):
     """
@@ -141,27 +143,13 @@ def create_order(request):
     basket = request.session.get('basket', '{}')
     return render(request, 'checkout_v2/create_order.html', {'basket': json.dumps(basket)})
 
-def order_success(request):
-    """
-    Displays a generic success message after an order has been completed.
-    This view is accessed directly from the Stripe success redirect.
-    """
-    return render(request, 'checkout_v2/order_success.html')
-
-def order_success_detail(request, order_id):
-    """
-    Displays a detailed success message for a specific order.
-    This view is accessed when the specific order_id is available.
-    """
-    order = Order.objects.get(id=order_id)
-    return render(request, 'checkout_v2/order_success_detail.html', {'order': order})
-
+@csrf_exempt
 def stripe_webhook(request):
     """
     Webhook endpoint for Stripe to handle events like checkout.session.completed.
     """
     payload = request.body
-    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
     endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
 
     try:
@@ -169,16 +157,19 @@ def stripe_webhook(request):
             payload, sig_header, endpoint_secret
         )
     except (ValueError, stripe.error.SignatureVerificationError) as e:
+        # Invalid payload or signature
         logger.error("Webhook signature verification failed: %s", e)
         return HttpResponse(status=400)
 
+    # Process the checkout.session.completed event
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
-        handle_checkout_session(session)
+        logger.info("Processing checkout.session.completed event")
+        handle_checkout_session(request, session)
 
     return HttpResponse(status=200)
 
-def handle_checkout_session(session):
+def handle_checkout_session(request, session):
     """
     Handles the successful checkout session and updates the order.
     """
@@ -187,6 +178,34 @@ def handle_checkout_session(session):
         order = Order.objects.get(stripe_pid=stripe_pid)
         order.is_paid = True
         order.save()
+
+        # Store order ID and total in session for displaying on the success page
+        request.session['order_id'] = order.id
+        request.session['order_total'] = order.grand_total
+
         logger.info("Order %s marked as paid.", order.id)
     except Order.DoesNotExist:
         logger.error("Order with Stripe PID %s not found.", stripe_pid)
+
+def order_success(request):
+    """
+    Displays a generic success message after an order has been completed.
+    """
+    order_id = request.session.get('order_id')
+    order_total = request.session.get('order_total')
+
+    # Clear the order data from session after using it
+    request.session.pop('order_id', None)
+    request.session.pop('order_total', None)
+
+    return render(request, 'checkout_v2/order_success.html', {
+        'order_id': order_id,
+        'order_total': order_total
+    })
+
+def order_success_detail(request, order_id):
+    """
+    Displays a detailed success message for a specific order.
+    """
+    order = Order.objects.get(id=order_id)
+    return render(request, 'checkout_v2/order_success_detail.html', {'order': order})

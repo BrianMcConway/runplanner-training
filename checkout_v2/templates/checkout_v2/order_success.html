@@ -1,10 +1,14 @@
-<!-- checkout_v2/templates/checkout_v2/order_success.html -->
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
+<div class="container text-center">
     <h2>Order Created Successfully</h2>
-    <p>Order ID: {{ order.id }}</p>
-    <p>Total: {{ order.grand_total }}</p>
+    {% if order_id %}
+        <p><strong>Order ID:</strong> {{ order_id }}</p>
+        <p><strong>Total:</strong> €{{ order_total|floatformat:2 }}</p>
+    {% else %}
+        <p>Order details are not available at the moment.</p>
+    {% endif %}
+    <a href="{% url 'products_v2:training_plans' %}" class="btn btn-primary">Continue Shopping</a>
 </div>
 {% endblock %}
