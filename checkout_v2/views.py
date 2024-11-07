@@ -27,8 +27,9 @@ def create_order(request):
         email = request.POST.get('email')
         phone_number = request.POST.get('phone_number')
         
-        # Ensure only the first two characters are taken for the country code
-        country = request.POST.get('country')[:2] if request.POST.get('country') else ''
+        # Extract the full country from the form submission
+        country = request.POST.get('country') if request.POST.get('country') else ''
+
         
         town_or_city = request.POST.get('town_or_city')
         street_address1 = request.POST.get('street_address1')
@@ -36,15 +37,15 @@ def create_order(request):
         county = request.POST.get('county')
         postcode = request.POST.get('postcode', '')
 
-        # Get the basket data from the POST request
-        original_basket = request.POST.get('basket', '{}')
+        # Retrieve basket from session, or use empty if not set
+        original_basket = request.session.get('basket', '{}')
         
         # Log the basket data before parsing
-        logger.info("Original basket data: %s", original_basket)
+        logger.info("Original basket data from session: %s", original_basket)
 
         # Parse the basket data into a dictionary
         try:
-            parsed_basket = json.loads(original_basket)  # Parse basket into dict
+            parsed_basket = json.loads(original_basket) if isinstance(original_basket, str) else original_basket
             logger.info("Parsed basket data: %s", parsed_basket)
         except json.JSONDecodeError as e:
             logger.error("Error parsing basket data: %s", e)
@@ -66,7 +67,7 @@ def create_order(request):
             county=county,
             postcode=postcode,
             date=timezone.now(),
-            original_basket=original_basket,
+            original_basket=json.dumps(parsed_basket),
             order_total=order_total,
             grand_total=order_total,  # Initialize with order total
             stripe_pid=stripe_pid,  # Unique for each order
@@ -74,12 +75,17 @@ def create_order(request):
         )
         order.save()
 
-        # Calculate total by iterating through parsed basket
-        for item_id, quantity in parsed_basket.items():
-            logger.info("Attempting to retrieve product with ID: %s", item_id)
+        # Calculate total by iterating through parsed basket, retrieving products by slug
+        for item_slug, item_data in parsed_basket.items():
+            logger.info("Attempting to retrieve product with slug: %s", item_slug)
             try:
-                # Retrieve the correct product based on item_id
-                product = Product.objects.get(id=item_id)
+                # Retrieve product based on slug
+                product = Product.objects.get(slug=item_slug)
+                
+                # Extract the quantity from item_data dictionary
+                quantity = item_data.get('quantity', 1)  # Default to 1 if quantity is missing
+                
+                # Calculate line item total and add to order total
                 line_item_total = product.price * quantity
                 order_total += line_item_total
 
@@ -88,7 +94,7 @@ def create_order(request):
                 line_item.save()
 
             except Product.DoesNotExist:
-                logger.error("Product with ID %s not found in the database.", item_id)
+                logger.error("Product with slug %s not found in the database.", item_slug)
                 continue
 
         # Update the order totals and save again
@@ -101,8 +107,9 @@ def create_order(request):
         # Redirect to a success page or order confirmation
         return redirect(reverse('checkout_v2:order_success', args=[order.id]))
 
-    # GET request: Render the order form (use for testing)
-    return render(request, 'checkout_v2/create_order.html')
+    # GET request: Render the order form, passing the basket to the template
+    basket = request.session.get('basket', '{}')
+    return render(request, 'checkout_v2/create_order.html', {'basket': json.dumps(basket)})
 
 def order_success(request, order_id):
     """
