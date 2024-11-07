@@ -2,8 +2,8 @@
 
 {% block content %}
 <div class="container">
-    <h2>Create Test Order</h2>
-    <form method="POST" action="{% url 'checkout_v2:create_order' %}">
+    <h2>Checkout</h2>
+    <form method="POST" action="{% url 'checkout_v2:checkout' %}">
         {% csrf_token %}
         
         <label for="full_name">Full Name:</label>
@@ -24,7 +24,7 @@
             <option value="CA">Canada</option>
             <option value="FR">France</option>
             <option value="DE">Germany</option>
-            <!-- Add more country options as needed -->
+            <!-- Additional countries can be added as needed -->
         </select><br>
         
         <label for="town_or_city">Town or City:</label>
@@ -44,7 +44,8 @@
 
         <input type="hidden" name="basket" value='{{ basket|safe }}'>
 
-        <button type="submit">Create Order</button>
+        <!-- Stripe Checkout Button -->
+        <button type="submit" class="btn btn-primary">Proceed to Payment</button>
     </form>
 </div>
 {% endblock %}

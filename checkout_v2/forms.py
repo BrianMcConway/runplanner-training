@@ -8,7 +8,8 @@ class OrderForm(forms.ModelForm):
             'full_name', 'email', 'phone_number', 
             'street_address1', 'street_address2', 
             'town_or_city', 'country', 'county',
-        )  # Removed 'postcode' from fields
+            'postcode',  # Add postcode for a complete address form
+        )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -20,7 +21,8 @@ class OrderForm(forms.ModelForm):
             'street_address1': 'Street Address 1',
             'street_address2': 'Street Address 2',
             'county': 'County, State or Locality',
-        }  # Removed 'postcode' from placeholders
+            'postcode': 'Postcode',  # Added placeholder for postcode
+        }
 
         self.fields['full_name'].widget.attrs.update({'autofocus': True})
         for field in self.fields:

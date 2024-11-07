@@ -1,25 +1,56 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import timezone
+from django.conf import settings
 from .models import Order, OrderLineItem
 from products_v2.models import Product
 import json
 import logging
 import uuid
+import stripe  # Stripe library for handling payments
 
 logger = logging.getLogger(__name__)
+stripe.api_key = settings.STRIPE_SECRET_KEY  # Set Stripe API key from settings
 
 def checkout(request):
     """
-    Main checkout view placeholder.
-    Renders the checkout form where Stripe or other payment integrations can be added.
+    Sets up the Stripe Checkout session and redirects to the payment page.
     """
+    if request.method == 'POST':
+        # Retrieve basket from session
+        basket = request.session.get('basket', {})
+        line_items = []
+
+        # Construct line items for Stripe from the basket
+        for item_slug, item_data in basket.items():
+            product = Product.objects.get(slug=item_slug)
+            line_items.append({
+                'price_data': {
+                    'currency': 'usd',  # Update as needed
+                    'product_data': {
+                        'name': product.name,
+                    },
+                    'unit_amount': int(product.price * 100),  # Amount in cents
+                },
+                'quantity': item_data['quantity'],
+            })
+
+        # Create the Stripe Checkout Session
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=line_items,
+            mode='payment',
+            success_url=request.build_absolute_uri(reverse('checkout_v2:order_success')),
+            cancel_url=request.build_absolute_uri(reverse('checkout_v2:checkout')),
+        )
+
+        return redirect(session.url, code=303)
+
     return render(request, 'checkout_v2/checkout.html')
 
 def create_order(request):
     """
-    View to create an order in the backend, without requiring Stripe confirmation.
-    Handles order data submission via POST and calculates prices based on the basket.
+    Creates an order in the backend and calculates prices based on the basket.
     """
     if request.method == 'POST':
         # Extract order data from POST request
@@ -29,7 +60,6 @@ def create_order(request):
         
         # Extract the full country from the form submission
         country = request.POST.get('country') if request.POST.get('country') else ''
-
         
         town_or_city = request.POST.get('town_or_city')
         street_address1 = request.POST.get('street_address1')
@@ -60,7 +90,7 @@ def create_order(request):
             full_name=full_name,
             email=email,
             phone_number=phone_number,
-            country=country,  # Store country code only to fit field constraints
+            country=country,
             town_or_city=town_or_city,
             street_address1=street_address1,
             street_address2=street_address2,
@@ -70,12 +100,12 @@ def create_order(request):
             original_basket=json.dumps(parsed_basket),
             order_total=order_total,
             grand_total=order_total,  # Initialize with order total
-            stripe_pid=stripe_pid,  # Unique for each order
+            stripe_pid=stripe_pid,
             is_paid=False  # Set to unpaid initially
         )
         order.save()
 
-        # Calculate total by iterating through parsed basket, retrieving products by slug
+        # Calculate total by iterating through parsed basket
         for item_slug, item_data in parsed_basket.items():
             logger.info("Attempting to retrieve product with slug: %s", item_slug)
             try:
@@ -83,7 +113,7 @@ def create_order(request):
                 product = Product.objects.get(slug=item_slug)
                 
                 # Extract the quantity from item_data dictionary
-                quantity = item_data.get('quantity', 1)  # Default to 1 if quantity is missing
+                quantity = item_data.get('quantity', 1)
                 
                 # Calculate line item total and add to order total
                 line_item_total = product.price * quantity
@@ -105,16 +135,58 @@ def create_order(request):
         logger.info("Order created with ID: %s and Stripe PID: %s. Order total: %s", order.id, stripe_pid, order_total)
 
         # Redirect to a success page or order confirmation
-        return redirect(reverse('checkout_v2:order_success', args=[order.id]))
+        return redirect(reverse('checkout_v2:order_success_detail', args=[order.id]))
 
     # GET request: Render the order form, passing the basket to the template
     basket = request.session.get('basket', '{}')
     return render(request, 'checkout_v2/create_order.html', {'basket': json.dumps(basket)})
 
-def order_success(request, order_id):
+def order_success(request):
     """
-    Displays a success message after an order has been created.
-    Shows the order details for confirmation.
+    Displays a generic success message after an order has been completed.
+    This view is accessed directly from the Stripe success redirect.
+    """
+    return render(request, 'checkout_v2/order_success.html')
+
+def order_success_detail(request, order_id):
+    """
+    Displays a detailed success message for a specific order.
+    This view is accessed when the specific order_id is available.
     """
     order = Order.objects.get(id=order_id)
-    return render(request, 'checkout_v2/order_success.html', {'order': order})
+    return render(request, 'checkout_v2/order_success_detail.html', {'order': order})
+
+def stripe_webhook(request):
+    """
+    Webhook endpoint for Stripe to handle events like checkout.session.completed.
+    """
+    payload = request.body
+    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+    endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except (ValueError, stripe.error.SignatureVerificationError) as e:
+        logger.error("Webhook signature verification failed: %s", e)
+        return HttpResponse(status=400)
+
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        handle_checkout_session(session)
+
+    return HttpResponse(status=200)
+
+def handle_checkout_session(session):
+    """
+    Handles the successful checkout session and updates the order.
+    """
+    stripe_pid = session.get('id')
+    try:
+        order = Order.objects.get(stripe_pid=stripe_pid)
+        order.is_paid = True
+        order.save()
+        logger.info("Order %s marked as paid.", order.id)
+    except Order.DoesNotExist:
+        logger.error("Order with Stripe PID %s not found.", stripe_pid)
