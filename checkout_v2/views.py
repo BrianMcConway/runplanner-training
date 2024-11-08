@@ -1,23 +1,19 @@
 from django.conf import settings
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.utils import timezone
-from django.http import HttpResponse
-from django.urls import reverse
 from .models import Order, OrderLineItem
 from products_v2.models import Product
 import json
-import logging
 import uuid
 import stripe
-
-logger = logging.getLogger(__name__)
 
 # Initialize Stripe with the secret key
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def checkout(request):
     """
-    Main checkout view that handles Stripe payment processing and order creation.
+    Handle the checkout process, including creating the order,
+    calculating totals, and creating the Stripe Payment Intent.
     """
     if request.method == 'POST':
         # Extract order data from POST request
@@ -34,22 +30,17 @@ def checkout(request):
         # Retrieve basket from session, or use empty if not set
         original_basket = request.session.get('basket', '{}')
 
-        # Log the basket data before parsing
-        logger.info("Original basket data from session: %s", original_basket)
-
         # Parse the basket data into a dictionary
         try:
             parsed_basket = json.loads(original_basket) if isinstance(original_basket, str) else original_basket
-            logger.info("Parsed basket data: %s", parsed_basket)
-        except json.JSONDecodeError as e:
-            logger.error("Error parsing basket data: %s", e)
+        except json.JSONDecodeError:
             parsed_basket = {}
 
-        # Set up unique Stripe PID and initialize totals
-        stripe_pid = str(uuid.uuid4())  # Generate unique stripe_pid
+        # Generate a unique Stripe PID and initialize totals
+        stripe_pid = str(uuid.uuid4())
         order_total = 0
 
-        # Create an Order instance
+        # Create an Order instance with initial data
         order = Order(
             full_name=full_name,
             email=email,
@@ -69,21 +60,18 @@ def checkout(request):
         )
         order.save()
 
-        # Calculate total by iterating through parsed basket, retrieving products by slug
+        # Calculate totals and create order line items
         for item_slug, item_data in parsed_basket.items():
-            logger.info("Attempting to retrieve product with slug: %s", item_slug)
             try:
-                # Retrieve product based on slug
+                # Retrieve the product based on slug
                 product = Product.objects.get(slug=item_slug)
 
-                # Extract the quantity from item_data dictionary
-                quantity = int(item_data.get('quantity', 1))  # Ensure quantity is an integer
-
-                # Calculate line item total and add to order total
+                # Extract quantity and calculate totals
+                quantity = int(item_data.get('quantity', 1))
                 line_item_total = product.price * quantity
                 order_total += line_item_total
 
-                # Create and save each line item with the correct product
+                # Create and save the order line item
                 line_item = OrderLineItem(
                     order=order,
                     product=product,
@@ -93,10 +81,10 @@ def checkout(request):
                 line_item.save()
 
             except Product.DoesNotExist:
-                logger.error("Product with slug %s not found in the database.", item_slug)
+                # Skip items that are not found
                 continue
 
-        # Update the order totals and save again
+        # Update the order with the calculated totals
         order.order_total = order_total
         order.grand_total = order_total
         order.save()
@@ -104,7 +92,7 @@ def checkout(request):
         # Serialize basket for metadata
         basket_json = json.dumps(parsed_basket)
 
-        # Ensure metadata values are strings and within Stripe's limitations
+        # Prepare metadata for Stripe Payment Intent
         metadata = {
             'order_id': str(order.id),
             'stripe_pid': stripe_pid,
@@ -120,36 +108,36 @@ def checkout(request):
             'postcode': postcode,
         }
 
-        # Truncate metadata values if necessary to comply with Stripe's limits
+        # Truncate metadata values to comply with Stripe's limits
         for key, value in metadata.items():
             if isinstance(value, str) and len(value) > 500:
                 metadata[key] = value[:500]
 
-        # Create Stripe Payment Intent
+        # Create the Stripe Payment Intent
         intent = stripe.PaymentIntent.create(
-            amount=int(order.grand_total * 100),  # Stripe expects amount in cents
+            amount=int(order.grand_total * 100),  # Amount in cents
             currency='eur',
             metadata=metadata
         )
 
-        # Pass order and Stripe client secret to the template for the frontend confirmation
+        # Pass data to the template for frontend processing
         context = {
             'order': order,
-            'order_id': order.id,  # Explicitly passing order_id for JavaScript
+            'order_id': order.id,  # For JavaScript use
             'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
             'client_secret': intent.client_secret
         }
 
         return render(request, 'checkout_v2/checkout.html', context)
 
-    # GET request: Render the checkout form with an empty basket if not provided
+    # For GET requests, render the checkout form
     basket = request.session.get('basket', '{}')
     return render(request, 'checkout_v2/checkout.html', {'basket': json.dumps(basket)})
 
 def order_success(request, order_id):
     """
-    Displays a success message after an order has been created.
-    Shows the order details for confirmation and clears the basket.
+    Display a success message after an order has been completed.
+    Show the order details for confirmation and clear the basket.
     """
     order = Order.objects.get(id=order_id)
 

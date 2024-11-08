@@ -3,26 +3,28 @@ import time
 from django.http import HttpResponse
 from .models import Order, OrderLineItem
 from products_v2.models import Product
-import logging
-
-logger = logging.getLogger(__name__)
 
 class StripeWH_Handler:
-    """Handle Stripe webhooks"""
+    """
+    Handle Stripe webhooks
+    """
 
     def __init__(self, request):
         self.request = request
 
     def handle_event(self, event):
-        """Handle a generic/unknown/unexpected webhook event"""
-        logger.info(f'Unhandled webhook received: {event["type"]}')
+        """
+        Handle a generic/unexpected webhook event
+        """
         return HttpResponse(
             content=f'Unhandled webhook received: {event["type"]}',
             status=200
         )
 
     def handle_payment_intent_succeeded(self, event):
-        """Handle the payment_intent.succeeded webhook from Stripe"""
+        """
+        Handle the payment_intent.succeeded webhook from Stripe
+        """
         intent = event['data']['object']
         pid = intent.id
         metadata = intent.metadata
@@ -39,7 +41,7 @@ class StripeWH_Handler:
         county = metadata.get('county', '')
         postcode = metadata.get('postcode', '')
 
-        # Try to retrieve the order, with retries
+        # Attempt to find the order in the database
         order_exists = False
         attempt = 1
         order = None
@@ -60,19 +62,19 @@ class StripeWH_Handler:
                     stripe_pid=pid,
                 )
                 order_exists = True
-                logger.info(f"Order {order.id} already exists in the database.")
                 break
             except Order.DoesNotExist:
                 attempt += 1
                 time.sleep(1)
 
         if order_exists:
+            # Order already exists
             return HttpResponse(
                 content=f'Webhook received: {event["type"]} | SUCCESS: Verified order already in database',
                 status=200
             )
         else:
-            # Order does not exist, create it
+            # Create the order since it does not exist
             try:
                 order_total = 0
                 order = Order.objects.create(
@@ -109,14 +111,13 @@ class StripeWH_Handler:
                         )
                         line_item.save()
                     except Product.DoesNotExist:
-                        logger.error(f"Product with slug {item_slug} not found.")
+                        # Skip items that are not found
                         continue
 
                 # Update the order with calculated totals and save again
                 order.order_total = order_total
                 order.grand_total = order_total
                 order.save()
-                logger.info(f"Order {order.id} created with total: {order.grand_total}")
 
                 return HttpResponse(
                     content=f'Webhook received: {event["type"]} | SUCCESS: Created order in webhook',
@@ -125,16 +126,26 @@ class StripeWH_Handler:
             except Exception as e:
                 if order:
                     order.delete()
-                logger.error(f"Error creating order: {e}")
                 return HttpResponse(
-                    content=f'Webhook received: {event["type"]} | ERROR: {e}',
+                    content=f'Webhook received: {event["type"]} | ERROR: {str(e)}',
                     status=500
                 )
 
     def handle_payment_intent_payment_failed(self, event):
-        """Handle the payment_intent.payment_failed webhook from Stripe"""
-        logger.warning(f"Payment failed for PID: {event['data']['object'].id}")
+        """
+        Handle the payment_intent.payment_failed webhook from Stripe
+        """
         return HttpResponse(
             content=f'Webhook received: {event["type"]}',
+            status=200
+        )
+
+    def handle_checkout_session_expired(self, event):
+        """
+        Handle the checkout.session.expired webhook from Stripe
+        """
+        # Implement any cleanup logic if needed
+        return HttpResponse(
+            content=f'Webhook received: {event["type"]} | Handled checkout.session.expired',
             status=200
         )
