@@ -45,8 +45,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("card-errors").textContent = result.error.message;
                 document.getElementById("submit-button").disabled = false;
             } else if (result.paymentIntent.status === 'succeeded') {
-                console.log("Payment succeeded, submitting form.");
-                form.submit();
+                console.log("Payment succeeded, redirecting to success page.");
+
+                // Redirect to the order success page
+                const orderSuccessUrl = form.action.replace('checkout', 'order_success/' + result.paymentIntent.metadata.order_id);
+                window.location.href = orderSuccessUrl;
             }
         });
     });
