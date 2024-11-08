@@ -5,7 +5,6 @@ from django.http import HttpResponse
 from django.urls import reverse
 from .models import Order, OrderLineItem
 from products_v2.models import Product
-from .webhook_handler import StripeWH_Handler
 import json
 import logging
 import uuid
@@ -15,7 +14,6 @@ logger = logging.getLogger(__name__)
 
 # Initialize Stripe with the secret key
 stripe.api_key = settings.STRIPE_SECRET_KEY
-endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
 
 def checkout(request):
     """
@@ -35,7 +33,7 @@ def checkout(request):
 
         # Retrieve basket from session, or use empty if not set
         original_basket = request.session.get('basket', '{}')
-        
+
         # Log the basket data before parsing
         logger.info("Original basket data from session: %s", original_basket)
 
@@ -77,10 +75,10 @@ def checkout(request):
             try:
                 # Retrieve product based on slug
                 product = Product.objects.get(slug=item_slug)
-                
+
                 # Extract the quantity from item_data dictionary
                 quantity = int(item_data.get('quantity', 1))  # Ensure quantity is an integer
-                
+
                 # Calculate line item total and add to order total
                 line_item_total = product.price * quantity
                 order_total += line_item_total
@@ -160,41 +158,3 @@ def order_success(request, order_id):
         del request.session['basket']
 
     return render(request, 'checkout_v2/checkout_success.html', {'order': order})
-
-def stripe_webhook(request):
-    """Listen for webhooks from Stripe"""
-    payload = request.body
-    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
-    event = None
-
-    try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, endpoint_secret
-        )
-    except ValueError as e:
-        # Invalid payload
-        logger.error(f"Invalid payload: {e}")
-        return HttpResponse(status=400)
-    except stripe.error.SignatureVerificationError as e:
-        # Invalid signature
-        logger.error(f"Signature verification failed: {e}")
-        return HttpResponse(status=400)
-
-    # Set up a Stripe webhook handler
-    handler = StripeWH_Handler(request)
-
-    # Map webhook events to handler functions
-    event_map = {
-        'payment_intent.succeeded': handler.handle_payment_intent_succeeded,
-        'payment_intent.payment_failed': handler.handle_payment_intent_payment_failed,
-    }
-
-    # Get the event type
-    event_type = event['type']
-
-    # Use the event handler from the map or fallback to the default handler
-    event_handler = event_map.get(event_type, handler.handle_event)
-
-    # Call the event handler with the event
-    response = event_handler(event)
-    return response
