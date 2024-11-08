@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.http import HttpResponse
 from django.urls import reverse
-from django.conf import settings
 from .models import Order, OrderLineItem
 from products_v2.models import Product
 from .webhook_handler import StripeWH_Handler
@@ -80,14 +79,19 @@ def checkout(request):
                 product = Product.objects.get(slug=item_slug)
                 
                 # Extract the quantity from item_data dictionary
-                quantity = item_data.get('quantity', 1)  # Default to 1 if quantity is missing
+                quantity = int(item_data.get('quantity', 1))  # Ensure quantity is an integer
                 
                 # Calculate line item total and add to order total
                 line_item_total = product.price * quantity
                 order_total += line_item_total
 
                 # Create and save each line item with the correct product
-                line_item = OrderLineItem(order=order, product=product, quantity=quantity, lineitem_total=line_item_total)
+                line_item = OrderLineItem(
+                    order=order,
+                    product=product,
+                    quantity=quantity,
+                    lineitem_total=line_item_total
+                )
                 line_item.save()
 
             except Product.DoesNotExist:
@@ -99,14 +103,35 @@ def checkout(request):
         order.grand_total = order_total
         order.save()
 
+        # Serialize basket for metadata
+        basket_json = json.dumps(parsed_basket)
+
+        # Ensure metadata values are strings and within Stripe's limitations
+        metadata = {
+            'order_id': str(order.id),
+            'stripe_pid': stripe_pid,
+            'basket': basket_json,
+            'full_name': full_name,
+            'email': email,
+            'phone_number': phone_number,
+            'country': country,
+            'town_or_city': town_or_city,
+            'street_address1': street_address1,
+            'street_address2': street_address2,
+            'county': county,
+            'postcode': postcode,
+        }
+
+        # Truncate metadata values if necessary to comply with Stripe's limits
+        for key, value in metadata.items():
+            if isinstance(value, str) and len(value) > 500:
+                metadata[key] = value[:500]
+
         # Create Stripe Payment Intent
         intent = stripe.PaymentIntent.create(
             amount=int(order.grand_total * 100),  # Stripe expects amount in cents
             currency='eur',
-            metadata={
-                'order_id': order.id,
-                'stripe_pid': stripe_pid
-            }
+            metadata=metadata
         )
 
         # Pass order and Stripe client secret to the template for the frontend confirmation
@@ -136,7 +161,6 @@ def order_success(request, order_id):
 
     return render(request, 'checkout_v2/checkout_success.html', {'order': order})
 
-
 def stripe_webhook(request):
     """Listen for webhooks from Stripe"""
     payload = request.body
@@ -149,9 +173,11 @@ def stripe_webhook(request):
         )
     except ValueError as e:
         # Invalid payload
+        logger.error(f"Invalid payload: {e}")
         return HttpResponse(status=400)
     except stripe.error.SignatureVerificationError as e:
         # Invalid signature
+        logger.error(f"Signature verification failed: {e}")
         return HttpResponse(status=400)
 
     # Set up a Stripe webhook handler

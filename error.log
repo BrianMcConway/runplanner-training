@@ -2140,3 +2140,28 @@ Traceback (most recent call last):
     raise NoReverseMatch(msg)
 django.urls.exceptions.NoReverseMatch: Reverse for 'order_success' with arguments '('',)' not found. 1 pattern(s) tried: ['checkout_v2/order_success/(?P<order_id>[0-9]+)/\\Z']
 "GET /checkout_v2/checkout/ HTTP/1.1" 500 172968
+Internal Server Error: /checkout_v2/checkout/
+Traceback (most recent call last):
+  File "/workspace/.pip-modules/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/.pip-modules/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/runplanner-training/checkout_v2/views.py", line 105, in checkout
+    intent = stripe.PaymentIntent.create(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/.pip-modules/lib/python3.12/site-packages/stripe/_payment_intent.py", line 10064, in create
+    cls._static_request(
+  File "/workspace/.pip-modules/lib/python3.12/site-packages/stripe/_api_resource.py", line 172, in _static_request
+    return _APIRequestor._global_instance().request(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/.pip-modules/lib/python3.12/site-packages/stripe/_api_requestor.py", line 197, in request
+    resp = requestor._interpret_response(rbody, rcode, rheaders, api_mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/.pip-modules/lib/python3.12/site-packages/stripe/_api_requestor.py", line 824, in _interpret_response
+    self.handle_error_response(
+  File "/workspace/.pip-modules/lib/python3.12/site-packages/stripe/_api_requestor.py", line 336, in handle_error_response
+    raise err
+stripe._error.InvalidRequestError: Request req_svtEpcwjOADZG9: Metadata values must be strings, but for key `basket` you passed in a value of type `hash`. Invalid value: {:"half_marathon-beginner-trail-5000-5500m"=>{:name=>"Half_marathon Beginner (Trail 5000-5500m)", :price=>"21.00", :quantity=>"1", :slug=>"half_marathon-beginner-trail-5000-5500m"}}
+"POST /checkout_v2/checkout/ HTTP/1.1" 500 126327
