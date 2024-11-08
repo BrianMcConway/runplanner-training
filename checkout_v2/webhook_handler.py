@@ -3,6 +3,10 @@ import time
 from django.http import HttpResponse
 from .models import Order, OrderLineItem
 from products_v2.models import Product
+import stripe
+from django.conf import settings
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class StripeWH_Handler:
     """
@@ -131,6 +135,18 @@ class StripeWH_Handler:
                     status=500
                 )
 
+    def handle_checkout_session_completed(self, event):
+        """
+        Handle the checkout.session.completed webhook from Stripe
+        """
+        session = event['data']['object']
+        # Retrieve the PaymentIntent ID from the session object
+        payment_intent_id = session.get('payment_intent')
+        # Use the PaymentIntent ID to retrieve the payment intent object
+        payment_intent = stripe.PaymentIntent.retrieve(payment_intent_id)
+        # Process the payment intent as in handle_payment_intent_succeeded
+        return self.handle_payment_intent_succeeded({'data': {'object': payment_intent}})
+
     def handle_payment_intent_payment_failed(self, event):
         """
         Handle the payment_intent.payment_failed webhook from Stripe
@@ -144,7 +160,6 @@ class StripeWH_Handler:
         """
         Handle the checkout.session.expired webhook from Stripe
         """
-        # Implement any cleanup logic if needed
         return HttpResponse(
             content=f'Webhook received: {event["type"]} | Handled checkout.session.expired',
             status=200
