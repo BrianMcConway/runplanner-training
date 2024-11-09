@@ -11,6 +11,7 @@ urlpatterns = [
     path('products_v2/', include('products_v2.urls', namespace='products_v2')),
     path('basket_v2/', include('basket_v2.urls', namespace='basket_v2')),
     path('checkout_v2/', include('checkout_v2.urls', namespace='checkout_v2')),
+    path('contact/', include('contact.urls')),
 ]
 
 # Serve media files in development
