@@ -1,12 +1,18 @@
+# checkout_v2/webhook_handler.py
+
 import json
 import logging
 from django.http import HttpResponse
-from .models import Order
+from .models import Order, OrderLineItem
+from products_v2.models import Product
 import stripe
 from django.conf import settings
+import time
 
+# Set Stripe API key
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
+# Set up logging
 logger = logging.getLogger(__name__)
 
 class StripeWH_Handler:
@@ -19,12 +25,12 @@ class StripeWH_Handler:
 
     def handle_event(self, event):
         """
-        Handle a generic/unexpected webhook event
+        Handle a generic/unknown/unexpected webhook event
         """
         logger.info(f'Unhandled webhook received: {event["type"]}')
         return HttpResponse(
             content=f'Unhandled webhook received: {event["type"]}',
-            status=200
+            status=200  # Respond with 200 to acknowledge receipt
         )
 
     def handle_payment_intent_succeeded(self, event):
@@ -40,8 +46,10 @@ class StripeWH_Handler:
 
         # Extract order details from metadata
         order_id = metadata.get('order_id')
+        stripe_pid = metadata.get('stripe_pid')
+
         try:
-            order = Order.objects.get(id=order_id, stripe_pid=metadata.get('stripe_pid'))
+            order = Order.objects.get(id=order_id, stripe_pid=stripe_pid)
             order.is_paid = True
             order.save()
             logger.info(f'Order {order_id} marked as paid.')
@@ -63,7 +71,8 @@ class StripeWH_Handler:
         logger.info('Received checkout.session.completed webhook event')
         session = event['data']['object']
         logger.debug(f'Checkout Session ID: {session.id}')
-        # You can extract more data from the session object if needed
+
+        # Optionally, you can extract more data from the session object if needed
         # For now, we'll call the payment_intent.succeeded handler
         return self.handle_payment_intent_succeeded(event)
 
@@ -74,7 +83,7 @@ class StripeWH_Handler:
         logger.warning(f'Payment failed for PaymentIntent {event["data"]["object"]["id"]}')
         return HttpResponse(
             content=f'Webhook received: {event["type"]}',
-            status=200
+            status=200  # Acknowledge receipt
         )
 
     def handle_checkout_session_expired(self, event):
@@ -99,8 +108,10 @@ class StripeWH_Handler:
 
         # Extract order details from metadata
         order_id = metadata.get('order_id')
+        stripe_pid = metadata.get('stripe_pid')
+
         try:
-            order = Order.objects.get(id=order_id, stripe_pid=metadata.get('stripe_pid'))
+            order = Order.objects.get(id=order_id, stripe_pid=stripe_pid)
             order.is_paid = True
             order.save()
             logger.info(f'Order {order_id} marked as paid via charge.succeeded.')
@@ -122,8 +133,25 @@ class StripeWH_Handler:
         logger.info('Received charge.updated webhook event')
         charge = event['data']['object']
         logger.debug(f'Charge ID: {charge["id"]}')
-        # Implement your logic here, for example, update order status if necessary
-        return HttpResponse(
-            content=f'Webhook received: {event["type"]} | SUCCESS: Charge updated.',
-            status=200
-        )
+        metadata = charge.get('metadata', {})
+        logger.debug(f'Metadata: {metadata}')
+
+        # Example: Update order details or log the update
+        order_id = metadata.get('order_id')
+        stripe_pid = metadata.get('stripe_pid')
+
+        try:
+            order = Order.objects.get(id=order_id, stripe_pid=stripe_pid)
+            # Example: Update order details based on charge update
+            # You can add more logic here as per your requirements
+            logger.info(f'Order {order_id} charge updated.')
+            return HttpResponse(
+                content=f'Webhook received: {event["type"]} | SUCCESS: Charge updated.',
+                status=200
+            )
+        except Order.DoesNotExist:
+            logger.error(f'Order {order_id} not found for charge update.')
+            return HttpResponse(
+                content=f'Webhook received: {event["type"]} | ERROR: Order not found.',
+                status=500
+            )

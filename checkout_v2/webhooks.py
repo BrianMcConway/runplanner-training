@@ -1,3 +1,5 @@
+# checkout_v2/webhooks.py
+
 from django.conf import settings
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
@@ -8,6 +10,7 @@ from .webhook_handler import StripeWH_Handler
 import stripe
 import logging
 
+# Set Stripe API key
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 # Set up logging
@@ -20,6 +23,7 @@ def stripe_webhook(request):
     Listen for webhooks from Stripe and handle incoming events.
     """
     logger.info('Received Stripe webhook')
+
     # Retrieve the webhook data and verify its signature
     payload = request.body
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE', '')
@@ -55,6 +59,7 @@ def stripe_webhook(request):
         'checkout.session.completed': handler.handle_checkout_session_completed,
         'charge.succeeded': handler.handle_charge_succeeded,
         'charge.updated': handler.handle_charge_updated,
+        # Add other event handlers as needed
     }
 
     # Get the event type
