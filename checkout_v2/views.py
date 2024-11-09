@@ -48,7 +48,7 @@ def create_order(request):
         if not parsed_basket:
             return JsonResponse({'error': 'Your basket is empty.'})
 
-        # Generate a unique Stripe PID and initialize totals
+        # Generate a unique stripe_pid and initialize totals
         stripe_pid = str(uuid.uuid4())
         order_total = 0
 
@@ -131,6 +131,10 @@ def create_order(request):
             currency='eur',
             metadata=metadata
         )
+
+        # Save the stripe_pid (PaymentIntent ID) to the order
+        order.stripe_pid = stripe_pid  # We use the generated stripe_pid
+        order.save()
 
         # Return client_secret and order_id to the client
         return JsonResponse({

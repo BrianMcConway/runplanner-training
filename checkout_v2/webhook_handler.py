@@ -1,12 +1,16 @@
+# checkout_v2/webhook_handler.py
+
 import json
 import time
+import logging
 from django.http import HttpResponse
-from .models import Order, OrderLineItem
-from products_v2.models import Product
+from .models import Order
 import stripe
 from django.conf import settings
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+logger = logging.getLogger(__name__)
 
 class StripeWH_Handler:
     """
@@ -20,6 +24,7 @@ class StripeWH_Handler:
         """
         Handle a generic/unexpected webhook event
         """
+        logger.info(f'Unhandled webhook received: {event["type"]}')
         return HttpResponse(
             content=f'Unhandled webhook received: {event["type"]}',
             status=200
@@ -29,9 +34,12 @@ class StripeWH_Handler:
         """
         Handle the payment_intent.succeeded webhook from Stripe
         """
+        logger.info('Received payment_intent.succeeded webhook event')
         intent = event['data']['object']
         pid = intent.id
         metadata = intent.metadata
+        logger.debug(f'PaymentIntent ID: {pid}')
+        logger.debug(f'Metadata: {metadata}')
 
         # Extract order details from metadata
         order_id = metadata.get('order_id')
@@ -39,12 +47,13 @@ class StripeWH_Handler:
             order = Order.objects.get(id=order_id, stripe_pid=pid)
             order.is_paid = True
             order.save()
+            logger.info(f'Order {order_id} marked as paid.')
             return HttpResponse(
-                content=f'Webhook received: {event["type"]} | SUCCESS: Verified order already in database',
+                content=f'Webhook received: {event["type"]} | SUCCESS: Order updated.',
                 status=200
             )
         except Order.DoesNotExist:
-            # Order does not exist, handle accordingly
+            logger.error(f'Order {order_id} not found.')
             return HttpResponse(
                 content=f'Webhook received: {event["type"]} | ERROR: Order not found.',
                 status=500
@@ -60,6 +69,7 @@ class StripeWH_Handler:
         """
         Handle the payment_intent.payment_failed webhook from Stripe
         """
+        logger.warning(f'Payment failed for PaymentIntent {event["data"]["object"]["id"]}')
         return HttpResponse(
             content=f'Webhook received: {event["type"]}',
             status=200
@@ -69,6 +79,7 @@ class StripeWH_Handler:
         """
         Handle the checkout.session.expired webhook from Stripe
         """
+        logger.info(f'Checkout session expired for Session ID {event["data"]["object"]["id"]}')
         return HttpResponse(
             content=f'Webhook received: {event["type"]} | Handled checkout.session.expired',
             status=200
