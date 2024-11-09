@@ -7,7 +7,6 @@ from .webhook_handler import StripeWH_Handler
 
 import stripe
 
-# Initialize Stripe with the secret key
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 @require_POST
@@ -19,13 +18,13 @@ def stripe_webhook(request):
     # Retrieve the webhook data and verify its signature
     payload = request.body
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE', '')
-    wh_secret = settings.STRIPE_WEBHOOK_SECRET
+    endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
     event = None
 
     try:
         # Construct the event using Stripe's library
         event = stripe.Webhook.construct_event(
-            payload, sig_header, wh_secret
+            payload, sig_header, endpoint_secret
         )
     except ValueError as e:
         # Invalid payload
@@ -44,10 +43,11 @@ def stripe_webhook(request):
     event_map = {
         'payment_intent.succeeded': handler.handle_payment_intent_succeeded,
         'payment_intent.payment_failed': handler.handle_payment_intent_payment_failed,
-        'checkout.session.completed': handler.handle_checkout_session_completed,  # Included handler
+        'checkout.session.completed': handler.handle_checkout_session_completed,
+        'checkout.session.expired': handler.handle_checkout_session_expired,
     }
 
-    # Get the type of event from Stripe
+    # Get the event type
     event_type = event['type']
 
     # Get the appropriate handler function
