@@ -4,21 +4,21 @@
 {% block content %}
 <div class="container">
     <h2>Checkout</h2>
-    <form id="payment-form" method="POST" action="{% url 'checkout_v2:checkout' %}">
+    <form id="payment-form" method="POST" action="{% url 'checkout_v2:create_order' %}">
         {% csrf_token %}
 
         <!-- Delivery/Billing Information -->
         <label for="full_name">Full Name:</label>
-        <input type="text" name="full_name" required><br>
-        
+        <input type="text" id="full_name" name="full_name" required><br>
+
         <label for="email">Email:</label>
-        <input type="email" name="email" required><br>
+        <input type="email" id="email" name="email" required><br>
 
         <label for="phone_number">Phone Number:</label>
-        <input type="text" name="phone_number" required><br>
+        <input type="text" id="phone_number" name="phone_number" required><br>
 
         <label for="country">Country:</label>
-        <select name="country" required>
+        <select id="country" name="country" required>
             <option value="IE">Ireland</option>
             <option value="US">United States</option>
             <option value="GB">United Kingdom</option>
@@ -28,86 +28,37 @@
         </select><br>
 
         <label for="town_or_city">Town or City:</label>
-        <input type="text" name="town_or_city" required><br>
-        
+        <input type="text" id="town_or_city" name="town_or_city" required><br>
+
         <label for="street_address1">Street Address 1:</label>
-        <input type="text" name="street_address1" required><br>
-        
+        <input type="text" id="street_address1" name="street_address1" required><br>
+
         <label for="street_address2">Street Address 2:</label>
-        <input type="text" name="street_address2"><br>
-        
+        <input type="text" id="street_address2" name="street_address2"><br>
+
         <label for="county">County:</label>
-        <input type="text" name="county"><br>
-        
+        <input type="text" id="county" name="county"><br>
+
         <label for="postcode">Postcode:</label>
-        <input type="text" name="postcode"><br>
+        <input type="text" id="postcode" name="postcode"><br>
 
         <!-- Stripe Card Element -->
         <div id="card-element" style="margin-top: 20px;"></div>
+        <div id="card-errors" role="alert" style="color: red; margin-top: 10px;"></div>
 
         <!-- Submit Button -->
-        <button id="submit" type="submit" class="btn btn-primary" style="margin-top: 20px;">
-            Pay €{{ order.grand_total|floatformat:2 }}
+        <button id="submit-button" type="submit" class="btn btn-primary" style="margin-top: 20px;">
+            Pay
         </button>
-        
-        <div id="payment-message" style="display:none; color: red;">Processing payment...</div>
     </form>
 </div>
 
 <!-- Hidden elements for JavaScript access to keys -->
-<div id="id_stripe_public_key" style="display: none;">{{ stripe_public_key }}</div>
-<div id="id_client_secret" style="display: none;">{{ client_secret }}</div>
-<div id="id_order_id" style="display: none;">{{ order_id }}</div>
+<div id="id_stripe_public_key" style="display: none;">{{ stripe_public_key|default:'' }}</div>
+<!-- client_secret and order_id will be set dynamically after order creation -->
 
-<!-- Stripe.js -->
-<script src="https://js.stripe.com/v3/"></script>
+{% endblock %}
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const stripePublicKey = document.getElementById("id_stripe_public_key").textContent;
-    const clientSecret = document.getElementById("id_client_secret").textContent;
-    const orderId = document.getElementById("id_order_id").textContent;
-
-    if (!clientSecret || !stripePublicKey) {
-        document.getElementById("payment-message").innerText = "Payment setup error. Please try again later.";
-        return;
-    }
-
-    const stripe = Stripe(stripePublicKey);
-    const elements = stripe.elements();
-    const card = elements.create("card");
-    card.mount("#card-element");
-
-    const form = document.getElementById("payment-form");
-    form.addEventListener("submit", async function (event) {
-        event.preventDefault();
-
-        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-            payment_method: {
-                card: card,
-                billing_details: {
-                    name: form.full_name.value,
-                    email: form.email.value,
-                    phone: form.phone_number.value,
-                    address: {
-                        line1: form.street_address1.value,
-                        line2: form.street_address2.value,
-                        city: form.town_or_city.value,
-                        state: form.county.value,
-                        postal_code: form.postcode.value,
-                        country: form.country.value,
-                    }
-                }
-            }
-        });
-
-        if (error) {
-            document.getElementById("payment-message").innerText = error.message;
-        } else if (paymentIntent.status === "succeeded") {
-            const orderSuccessUrl = "{% url 'checkout_v2:order_success' 0 %}".replace('0', orderId);
-            window.location.href = orderSuccessUrl;
-        }
-    });
-});
-</script>
+{% block postloadjs %}
+<script src="{% static 'js/checkout.js' %}"></script>
 {% endblock %}

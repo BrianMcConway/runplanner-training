@@ -1,44 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container text-center">
-    <h2>Order Confirmation</h2>
-    <div class="alert alert-success">
-        <h3>Thank you for your order!</h3>
-        <p>Your payment was successful. A confirmation email has been sent.</p>
-        
-        <!-- Display the Order Number -->
-        <p><strong>Order Number:</strong> {{ order.id }}</p>
-        
-        <!-- Display the Grand Total -->
-        <p><strong>Total Paid:</strong> €{{ order.grand_total|floatformat:2 }}</p>
-    </div>
-    
-    <!-- Display Order Line Items -->
-    <h4>Order Summary</h4>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Line Item Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in order.orderlineitem_set.all %}
-            <tr>
-                <td>{{ item.product.name }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>€{{ item.lineitem_total|floatformat:2 }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="3">No items found for this order.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    
-    <a href="{% url 'products_v2:training_plans' %}" class="btn btn-primary">Continue Shopping</a>
+<div class="container">
+    <h2>Order Success</h2>
+    <p>Thank you for your order! Your order number is {{ order.id }}.</p>
+    <p>We've sent a confirmation email to {{ order.email }}.</p>
+
+    <h3>Order Details</h3>
+    <ul>
+        <li><strong>Full Name:</strong> {{ order.full_name }}</li>
+        <li><strong>Email:</strong> {{ order.email }}</li>
+        <li><strong>Phone Number:</strong> {{ order.phone_number }}</li>
+        <li><strong>Address:</strong> {{ order.street_address1 }}, {{ order.street_address2 }}, {{ order.town_or_city }}, {{ order.county }}, {{ order.postcode }}, {{ order.country }}</li>
+        <li><strong>Order Total:</strong> €{{ order.order_total|floatformat:2 }}</li>
+    </ul>
+
+    <h3>Items Purchased</h3>
+    <ul>
+        {% for item in order.lineitems.all %}
+            <li>{{ item.product.name }} (Quantity: {{ item.quantity }}) - €{{ item.lineitem_total|floatformat:2 }}</li>
+        {% endfor %}
+    </ul>
 </div>
 {% endblock %}

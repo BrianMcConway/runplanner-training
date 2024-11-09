@@ -1,5 +1,8 @@
+# checkout_v2/views.py
+
 from django.conf import settings
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
 from .models import Order, OrderLineItem
 from products_v2.models import Product
@@ -12,8 +15,14 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def checkout(request):
     """
-    Handle the checkout process, including creating the order,
-    calculating totals, and creating the Stripe Payment Intent.
+    Render the checkout page with the Stripe public key.
+    """
+    stripe_public_key = settings.STRIPE_PUBLIC_KEY
+    return render(request, 'checkout_v2/checkout.html', {'stripe_public_key': stripe_public_key})
+
+def create_order(request):
+    """
+    Handle the creation of an order via AJAX and return client_secret and order_id.
     """
     if request.method == 'POST':
         # Extract order data from POST request
@@ -27,7 +36,7 @@ def checkout(request):
         county = request.POST.get('county')
         postcode = request.POST.get('postcode', '')
 
-        # Retrieve basket from session, or use empty if not set
+        # Retrieve basket from session
         original_basket = request.session.get('basket', '{}')
 
         # Parse the basket data into a dictionary
@@ -35,6 +44,9 @@ def checkout(request):
             parsed_basket = json.loads(original_basket) if isinstance(original_basket, str) else original_basket
         except json.JSONDecodeError:
             parsed_basket = {}
+
+        if not parsed_basket:
+            return JsonResponse({'error': 'Your basket is empty.'})
 
         # Generate a unique Stripe PID and initialize totals
         stripe_pid = str(uuid.uuid4())
@@ -120,26 +132,21 @@ def checkout(request):
             metadata=metadata
         )
 
-        # Pass data to the template for frontend processing
-        context = {
-            'order': order,
-            'order_id': order.id,  # For JavaScript use
-            'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
-            'client_secret': intent.client_secret
-        }
+        # Return client_secret and order_id to the client
+        return JsonResponse({
+            'client_secret': intent.client_secret,
+            'order_id': order.id
+        })
 
-        return render(request, 'checkout_v2/checkout.html', context)
-
-    # For GET requests, render the checkout form
-    basket = request.session.get('basket', '{}')
-    return render(request, 'checkout_v2/checkout.html', {'basket': json.dumps(basket)})
+    # If not POST request, return an error
+    return JsonResponse({'error': 'Invalid request method.'})
 
 def order_success(request, order_id):
     """
     Display a success message after an order has been completed.
     Show the order details for confirmation and clear the basket.
     """
-    order = Order.objects.get(id=order_id)
+    order = get_object_or_404(Order, id=order_id)
 
     # Clear the session basket
     if 'basket' in request.session:
