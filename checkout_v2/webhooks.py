@@ -55,7 +55,6 @@ def stripe_webhook(request):
         'checkout.session.completed': handler.handle_checkout_session_completed,
         'charge.succeeded': handler.handle_charge_succeeded,
         'charge.updated': handler.handle_charge_updated,
-        # Add other event handlers as needed
     }
 
     # Get the event type
