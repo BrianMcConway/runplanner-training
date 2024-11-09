@@ -14,7 +14,7 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 @csrf_exempt
 def stripe_webhook(request):
     """
-    Listen for webhooks from Stripe and handle payment intent events.
+    Listen for webhooks from Stripe and handle incoming events.
     """
     # Retrieve the webhook data and verify its signature
     payload = request.body
@@ -27,10 +27,10 @@ def stripe_webhook(request):
         event = stripe.Webhook.construct_event(
             payload, sig_header, wh_secret
         )
-    except ValueError:
+    except ValueError as e:
         # Invalid payload
         return HttpResponse(status=400)
-    except stripe.error.SignatureVerificationError:
+    except stripe.error.SignatureVerificationError as e:
         # Invalid signature
         return HttpResponse(status=400)
     except Exception as e:
@@ -44,8 +44,7 @@ def stripe_webhook(request):
     event_map = {
         'payment_intent.succeeded': handler.handle_payment_intent_succeeded,
         'payment_intent.payment_failed': handler.handle_payment_intent_payment_failed,
-        'checkout.session.completed': handler.handle_checkout_session_completed,  # Added back handler
-        'checkout.session.expired': handler.handle_checkout_session_expired,
+        'checkout.session.completed': handler.handle_checkout_session_completed,  # Included handler
     }
 
     # Get the type of event from Stripe
