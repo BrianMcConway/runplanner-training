@@ -144,6 +144,13 @@ def create_order(request):
     # If not POST request, return an error
     return JsonResponse({'error': 'Invalid request method.'})
 
+def check_order_payment(request, order_id):
+    """
+    Returns the payment status of the order as JSON.
+    """
+    order = get_object_or_404(Order, id=order_id)
+    return JsonResponse({'is_paid': order.is_paid})
+
 def order_success(request, order_id):
     """
     Display a success message after an order has been completed.
@@ -152,11 +159,6 @@ def order_success(request, order_id):
     # Retrieve the order object by ID
     order = get_object_or_404(Order, id=order_id)
     
-    # Check if the order has been marked as paid by the webhook
-    if not order.is_paid:
-        # Redirect or show a message if the payment has not been confirmed
-        return redirect('checkout_v2:checkout')  # or another appropriate action
-
     # Create purchase records for each line item in the order
     # Use the related_name 'lineitems' to access related OrderLineItem instances
     for line_item in order.lineitems.all():
