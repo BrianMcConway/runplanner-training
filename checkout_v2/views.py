@@ -1,7 +1,5 @@
-# checkout_v2/views.py
-
 from django.conf import settings
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, redirect
 from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
 from .models import Order, OrderLineItem
@@ -9,6 +7,7 @@ from products_v2.models import Product
 import json
 import uuid
 import stripe
+from my_account.models import Purchase
 
 # Initialize Stripe with the secret key
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -150,10 +149,22 @@ def order_success(request, order_id):
     Display a success message after an order has been completed.
     Show the order details for confirmation and clear the basket.
     """
+    # Retrieve the order object by ID
     order = get_object_or_404(Order, id=order_id)
+
+    # Create purchase records for each line item in the order
+    # Use the related_name 'lineitems' to access related OrderLineItem instances
+    for line_item in order.lineitems.all():
+        Purchase.objects.create(
+            user=request.user,
+            training_plan=line_item.product,  # Assuming 'product' is the training plan
+            purchase_date=timezone.now(),
+            payment_verified=True  # Mark as verified since payment was successful
+        )
 
     # Clear the session basket
     if 'basket' in request.session:
         del request.session['basket']
 
+    # Render the checkout success page with the order details
     return render(request, 'checkout_v2/checkout_success.html', {'order': order})

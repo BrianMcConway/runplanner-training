@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+{% load account_filters %}
+
+{% block content %}
+<h1>My Training Plans</h1>
+<ul>
+    {% for purchase in purchases %}
+        <li>
+            {% if purchase.training_plan.image %}
+                <img src="{{ purchase.training_plan.image.url }}" alt="Training Plan Image">
+            {% else %}
+                <img src="{% static 'images/placeholder.jpg' %}" alt="Placeholder Image">
+            {% endif %}
+            <h2>{{ purchase.training_plan.name|replace_underscore }}</h2>
+        </li>
+    {% empty %}
+        <li>No training plans purchased yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

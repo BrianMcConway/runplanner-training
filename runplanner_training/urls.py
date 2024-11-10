@@ -1,4 +1,3 @@
-# urls.py
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
@@ -12,6 +11,7 @@ urlpatterns = [
     path('basket_v2/', include('basket_v2.urls', namespace='basket_v2')),
     path('checkout_v2/', include('checkout_v2.urls', namespace='checkout_v2')),
     path('contact/', include('contact.urls')),
+    path('my_account/', include('my_account.urls')),
 ]
 
 # Serve media files in development

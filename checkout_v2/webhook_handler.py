@@ -1,5 +1,3 @@
-# checkout_v2/webhook_handler.py
-
 import json
 import logging
 from django.http import HttpResponse
