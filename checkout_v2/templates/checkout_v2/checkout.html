@@ -2,52 +2,81 @@
 {% load static %}
 
 {% block content %}
-<div class="container">
-    <h2>Checkout</h2>
+<div class="container my-5">
+    <h2 class="mb-4">Checkout</h2>
     <form id="payment-form" method="POST" action="{% url 'checkout_v2:create_order' %}">
         {% csrf_token %}
 
         <!-- Delivery/Billing Information -->
-        <label for="full_name">Full Name:</label>
-        <input type="text" id="full_name" name="full_name" required><br>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="full_name" class="form-label">Full Name:</label>
+                <input type="text" id="full_name" name="full_name" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+            </div>
+        </div>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="phone_number" class="form-label">Phone Number:</label>
+                <input type="text" id="phone_number" name="phone_number" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label for="country" class="form-label">Country:</label>
+                <select id="country" name="country" class="form-select" required>
+                    <option value="IE">Ireland</option>
+                    <option value="US">United States</option>
+                    <option value="GB">United Kingdom</option>
+                    <option value="CA">Canada</option>
+                    <option value="FR">France</option>
+                    <option value="DE">Germany</option>
+                </select>
+            </div>
+        </div>
 
-        <label for="phone_number">Phone Number:</label>
-        <input type="text" id="phone_number" name="phone_number" required><br>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="town_or_city" class="form-label">Town or City:</label>
+                <input type="text" id="town_or_city" name="town_or_city" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label for="street_address1" class="form-label">Street Address 1:</label>
+                <input type="text" id="street_address1" name="street_address1" class="form-control" required>
+            </div>
+        </div>
 
-        <label for="country">Country:</label>
-        <select id="country" name="country" required>
-            <option value="IE">Ireland</option>
-            <option value="US">United States</option>
-            <option value="GB">United Kingdom</option>
-            <option value="CA">Canada</option>
-            <option value="FR">France</option>
-            <option value="DE">Germany</option>
-        </select><br>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="street_address2" class="form-label">Street Address 2:</label>
+                <input type="text" id="street_address2" name="street_address2" class="form-control">
+            </div>
+            <div class="col-md-6">
+                <label for="county" class="form-label">County:</label>
+                <input type="text" id="county" name="county" class="form-control">
+            </div>
+        </div>
 
-        <label for="town_or_city">Town or City:</label>
-        <input type="text" id="town_or_city" name="town_or_city" required><br>
-
-        <label for="street_address1">Street Address 1:</label>
-        <input type="text" id="street_address1" name="street_address1" required><br>
-
-        <label for="street_address2">Street Address 2:</label>
-        <input type="text" id="street_address2" name="street_address2"><br>
-
-        <label for="county">County:</label>
-        <input type="text" id="county" name="county"><br>
-
-        <label for="postcode">Postcode:</label>
-        <input type="text" id="postcode" name="postcode"><br>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="postcode" class="form-label">Postcode:</label>
+                <input type="text" id="postcode" name="postcode" class="form-control">
+            </div>
+        </div>
 
         <!-- Stripe Card Element -->
-        <div id="card-element" style="margin-top: 20px;"></div>
-        <div id="card-errors" role="alert" style="color: red; margin-top: 10px;"></div>
+        <div class="row mb-3">
+            <div class="col-12">
+                <label for="card-element" class="form-label">Card Details:</label>
+                <div id="card-element" class="form-control" style="padding: 10px;"></div>
+                <div id="card-errors" role="alert" class="text-danger mt-2"></div>
+            </div>
+        </div>
 
         <!-- Submit Button -->
-        <button id="submit-button" type="submit" class="btn btn-primary" style="margin-top: 20px;">
+        <button id="submit-button" type="submit" class="btn btn-primary w-100 mt-3">
             Pay
         </button>
     </form>
