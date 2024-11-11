@@ -106,13 +106,7 @@
                         <div class="text-center">
                             <i class="fas fa-shopping-bag fa-lg"></i>
                             <p class="my-0">
-                                {% with basket=request.session.basket %}
-                                    {% if basket %}
-                                        €{{ basket.total_price|floatformat:2 }}
-                                    {% else %}
-                                        €0.00
-                                    {% endif %}
-                                {% endwith %}
+                                €{{ grand_total|floatformat:2 }}
                             </p>
                         </div>
                     </a>

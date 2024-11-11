@@ -45,19 +45,16 @@
     </div>
 </li>
 
-<li class="list-inline-item">
-    <a class="text-black nav-link d-block d-lg-none" href="{% url 'basket_v2:show_basket' %}">
+<!-- Basket Icon with Amount (Visible Only on Small and Medium Screens) -->
+<li class="list-inline-item d-block d-lg-none" id="basket-icon">
+    <a class="text-black nav-link" href="{% url 'basket_v2:show_basket' %}">
         <div class="text-center">
             <i class="fas fa-shopping-bag fa-lg"></i>
             <p class="my-0">
-                {% with basket=request.session.basket %}
-                    {% if basket %}
-                    €{{ basket.total_price|floatformat:2 }}
-                {% else %}
-                    €0.00
-                {% endif %}
-            {% endwith %}
+                €{{ grand_total|floatformat:2 }}
             </p>
         </div>
     </a>
 </li>
+
+

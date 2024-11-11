@@ -1,25 +1,54 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-<div class="container">
-    <h2>Order Success</h2>
-    <p>Thank you for your order! Your order number is {{ order.id }}.</p>
-    <p>We've sent a confirmation email to {{ order.email }}.</p>
+<div class="container my-5">
+    <div class="text-center mb-4">
+        <h2>Order Success</h2>
+        <p class="lead">Thank you for your order! Your order number is <strong>{{ order.id }}</strong>.</p>
+        <p>We've sent a confirmation email to <strong>{{ order.email }}</strong>.</p>
+    </div>
 
-    <h3>Order Details</h3>
-    <ul>
-        <li><strong>Full Name:</strong> {{ order.full_name }}</li>
-        <li><strong>Email:</strong> {{ order.email }}</li>
-        <li><strong>Phone Number:</strong> {{ order.phone_number }}</li>
-        <li><strong>Address:</strong> {{ order.street_address1 }}, {{ order.street_address2 }}, {{ order.town_or_city }}, {{ order.county }}, {{ order.postcode }}, {{ order.country }}</li>
-        <li><strong>Order Total:</strong> €{{ order.order_total|floatformat:2 }}</li>
-    </ul>
+    <div class="row">
+        <!-- Order Details Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5>Order Details</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li><strong>Full Name:</strong> {{ order.full_name }}</li>
+                        <li><strong>Email:</strong> {{ order.email }}</li>
+                        <li><strong>Phone Number:</strong> {{ order.phone_number }}</li>
+                        <li><strong>Address:</strong> {{ order.street_address1 }}, {{ order.street_address2 }}, {{ order.town_or_city }}, {{ order.county }}, {{ order.postcode }}, {{ order.country }}</li>
+                        <li><strong>Order Total:</strong> €{{ order.order_total|floatformat:2 }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-    <h3>Items Purchased</h3>
-    <ul>
-        {% for item in order.lineitems.all %}
-            <li>{{ item.product.name }} (Quantity: {{ item.quantity }}) - €{{ item.lineitem_total|floatformat:2 }}</li>
-        {% endfor %}
-    </ul>
+        <!-- Items Purchased Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5>Items Purchased</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        {% for item in order.lineitems.all %}
+                            <li>{{ item.product.name }} <small>(Quantity: {{ item.quantity }})</small> - €{{ item.lineitem_total|floatformat:2 }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Continue Shopping Button -->
+    <div class="text-center mt-4">
+        <a href="{% url 'products_v2:training_plans' %}" class="btn btn-secondary me-2">Return to Training Plans</a>
+        <a href="{% url 'my_account:my_account' %}" class="btn btn-success">View Your New Training Plan</a>
+    </div>
 </div>
 {% endblock %}
