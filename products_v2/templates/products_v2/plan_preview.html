@@ -21,9 +21,9 @@
         <li><strong>Price:</strong> €{{ plan.price|floatformat:2 }}</li>
     </ul>
 
-    <div class="mt-4">
-        <a href="{% url 'products_v2:training_plans' %}" class="btn btn-secondary">Go Back to Selection</a>
-        <a href="{% url 'basket_v2:add_to_basket' plan.slug %}" class="btn btn-primary btn-lg">Add to Basket</a>
+    <div class="mt-4 d-flex justify-content-start" style="max-width: 500px; margin: 0 auto;">
+        <a href="{% url 'products_v2:training_plans' %}" class="btn btn-secondary" style="width: 48%; margin-right: 2%;">Go Back</a>
+        <a href="{% url 'basket_v2:add_to_basket' plan.slug %}" class="btn btn-primary btn-lg" style="width: 48%;">Add to Basket</a>
     </div>
 </div>
 {% endblock %}

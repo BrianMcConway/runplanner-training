@@ -9,7 +9,7 @@
 <div class="container text-center">
     <h2>Choose Your Training Plan</h2>
     
-    <!-- Form for selecting options using crispy-forms -->
+    <!-- Form for selecting options -->
     <div class="form-container mx-auto my-4" style="max-width: 400px;">
         <form method="GET" action="{% url 'products_v2:training_plans' %}">
             {% crispy form %}
@@ -17,7 +17,8 @@
     </div>
 
     {% if preview_plan %}
-        <div class="plan-preview mt-5">
+        <!-- Distinct Section for Plan Preview -->
+        <div class="plan-preview mt-5 p-4 rounded" style="background-color: #f8f9fa; max-width: 600px; margin: 0 auto;">
             <h3>Training Plan Preview: {{ preview_plan.name }}</h3>
             <img src="{{ MEDIA_URL }}training-plan-sample-test.jpg" alt="Training Plan Sample" class="img-fluid rounded" style="max-width: 500px;">
             <ul class="list-unstyled mt-3">
@@ -27,8 +28,10 @@
                 <li><strong>Elevation:</strong> {{ preview_plan.elevation }}</li>
                 <li><strong>Price:</strong> €{{ preview_plan.price|floatformat:2 }}</li>
             </ul>
-            <div class="mt-4">
-                <a href="{% url 'basket_v2:add_to_basket' preview_plan.slug %}" class="btn btn-primary btn-lg">Add to Basket</a>
+
+            <!-- Centered Button Aligned to Preview Content Width -->
+            <div class="mt-4" style="max-width: 500px; margin: 0 auto;">
+                <a href="{% url 'basket_v2:add_to_basket' preview_plan.slug %}" class="btn btn-primary btn-lg" style="width: 100%;">Add to Basket</a>
             </div>
         </div>
     {% endif %}

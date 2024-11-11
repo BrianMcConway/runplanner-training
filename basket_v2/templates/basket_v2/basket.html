@@ -40,9 +40,10 @@
         </table>
         <h3 class="mt-4">Total: €{{ total_price|floatformat:2 }}</h3>
         
-        <div class="mt-4">
-            <a href="{% url 'checkout_v2:checkout' %}">Proceed to Checkout</a>
-            <a href="{% url 'basket_v2:clear_basket' %}" class="btn btn-danger">Empty Basket</a>
+        <div class="mt-4 d-flex justify-content-center">
+            <a href="{% url 'checkout_v2:checkout' %}" class="btn btn-primary mx-2" style="width: 200px;">Proceed to Checkout</a>
+            <a href="{% url 'basket_v2:clear_basket' %}" class="btn btn-danger mx-2" style="width: 200px;">Empty Basket</a>
+            <a href="{% url 'products_v2:training_plans' %}" class="btn btn-secondary mx-2" style="width: 200px;">Return to Training Plans</a>
         </div>
         {% else %}
             <p>Your basket is empty.</p>

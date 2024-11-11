@@ -14,10 +14,36 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def checkout(request):
     """
-    Render the checkout page with the Stripe public key.
+    Render the checkout page with the Stripe public key and basket data.
     """
     stripe_public_key = settings.STRIPE_PUBLIC_KEY
-    return render(request, 'checkout_v2/checkout.html', {'stripe_public_key': stripe_public_key})
+    original_basket = request.session.get('basket', '{}')
+
+    # Parse the basket data
+    try:
+        parsed_basket = json.loads(original_basket) if isinstance(original_basket, str) else original_basket
+    except json.JSONDecodeError:
+        parsed_basket = {}
+
+    # Retrieve items and calculate total price
+    items = []
+    total_price = 0
+    for item_slug, item_data in parsed_basket.items():
+        try:
+            product = Product.objects.get(slug=item_slug)
+            quantity = int(item_data.get('quantity', 1))
+            line_item_total = product.price * quantity
+            total_price += line_item_total
+            items.append({'name': product.name, 'price': f'€{product.price:.2f}', 'quantity': quantity})
+        except Product.DoesNotExist:
+            continue
+
+    context = {
+        'stripe_public_key': stripe_public_key,
+        'items': items,
+        'total_price': f'€{total_price:.2f}'
+    }
+    return render(request, 'checkout_v2/checkout.html', context)
 
 def create_order(request):
     """
@@ -175,3 +201,4 @@ def order_success(request, order_id):
 
     # Render the checkout success page with the order details
     return render(request, 'checkout_v2/checkout_success.html', {'order': order})
+
