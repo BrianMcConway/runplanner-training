@@ -1,9 +1,16 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-<div class="container text-center">
-    <h2>Thank You!</h2>
-    <p>Your message has been sent successfully. We will get back to you soon.</p>
-    <a href="{% url 'home' %}" class="btn btn-primary">Return to Homepage</a>  <!-- Adjust 'home' if your home URL is named differently -->
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="shadow-sm p-4 bg-light rounded">
+                <h2 class="mb-3">Thank You!</h2>
+                <p>Your message has been sent successfully. We will get back to you soon.</p>
+                <a href="{% url 'home' %}" class="btn btn-primary btn-block mt-3">Return to Homepage</a>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

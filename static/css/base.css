@@ -7,28 +7,37 @@ html {
 .default-page {
     background: url('/media/running.jpg') no-repeat center center fixed;
     background-size: cover;
-    height: calc(100vh - 164px);
+    min-height: calc(100vh - 130px); /* Adjusted for header height */
     color: #555;
+    display: flex;
+    align-items: center; /* Vertically centers the content */
+    justify-content: flex-start; /* Aligns content to the left */
+    padding-left: 50px; /* Adjust as needed for spacing from the left */
 }
 
 /* Repositioning background image on smaller screens */
 @media (max-width: 992px) {
     .default-page {
         background-position: 70% center;
+        padding-left: 30px; /* Adjust padding for smaller screens */
     }
 }
 
 @media (max-width: 576px) {
     .default-page {
         background-position: 80% center;
+        padding-left: 20px; /* Further adjust padding for mobile devices */
     }
 }
 
 /* Background for plain color pages */
 .plain-background {
     background-color: #f0f0f0;
-    height: calc(100vh - 164px);
+    min-height: 100vh;
     color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 body {
@@ -119,3 +128,43 @@ input, select {
 #basket-icon {
     margin-left: 70px;
 }
+
+/* Responsive Adjustments for Navbar Icons */
+@media (max-width: 575.98px) { /* Extra-small screens */
+    #account-icon,
+    #basket-icon {
+        margin: 0 10px; /* Reduced horizontal margins */
+    }
+}
+
+/* Prevent dropdown menus from affecting navbar layout */
+.dropdown-menu {
+    width: auto; /* Remove w-100 to prevent full-width dropdowns */
+}
+
+/* Ensure navbar list uses flexbox */
+.navbar-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Adjust list-inline classes for better alignment */
+.list-inline {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 0;
+    list-style: none;
+}
+
+.list-inline-item {
+    margin-right: 10px; /* Small margin between items */
+}
+
+@media (max-width: 575.98px) { /* Extra-small screens */
+    .list-inline-item {
+        margin-right: 5px; /* Even smaller margin on very small screens */
+    }
+}
+

@@ -1,5 +1,7 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static crispy_forms_tags %}  <!-- Load crispy_forms_tags -->
+
+{% block body_class %}default-page{% endblock %}
 
 {% block page_header %}
     <div class="container header-container">
@@ -10,10 +12,10 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container h-100">
-        <div class="row h-100">
-            <div class="col-7 col-md-6 my-auto">
-                <h1 class="display-4 logo-font text-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <h1 class="display-4 logo-font text-white mb-4">
                     Couch to first race, or looking to smash that personal best???
                 </h1>
                 <div class="my-5">
