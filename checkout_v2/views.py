@@ -1,7 +1,10 @@
+# checkout_v2/views.py
+
 from django.conf import settings
-from django.shortcuts import render, redirect, get_object_or_404, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required  # Import decorator
 from .models import Order, OrderLineItem
 from products_v2.models import Product
 import json
@@ -12,6 +15,7 @@ from my_account.models import Purchase
 # Initialize Stripe with the secret key
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
+@login_required(login_url='account_login')  # Apply decorator
 def checkout(request):
     """
     Render the checkout page with the Stripe public key and basket data.
@@ -45,6 +49,7 @@ def checkout(request):
     }
     return render(request, 'checkout_v2/checkout.html', context)
 
+@login_required(login_url='account_login')  # Apply decorator
 def create_order(request):
     """
     Handle the creation of an order via AJAX and return client_secret and order_id.
@@ -170,6 +175,7 @@ def create_order(request):
     # If not POST request, return an error
     return JsonResponse({'error': 'Invalid request method.'})
 
+@login_required(login_url='account_login')  # Apply decorator
 def check_order_payment(request, order_id):
     """
     Returns the payment status of the order as JSON.
@@ -177,6 +183,7 @@ def check_order_payment(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     return JsonResponse({'is_paid': order.is_paid})
 
+@login_required(login_url='account_login')  # Apply decorator
 def order_success(request, order_id):
     """
     Display a success message after an order has been completed.
@@ -184,7 +191,7 @@ def order_success(request, order_id):
     """
     # Retrieve the order object by ID
     order = get_object_or_404(Order, id=order_id)
-    
+
     # Create purchase records for each line item in the order
     # Use the related_name 'lineitems' to access related OrderLineItem instances
     for line_item in order.lineitems.all():
@@ -201,4 +208,3 @@ def order_success(request, order_id):
 
     # Render the checkout success page with the order details
     return render(request, 'checkout_v2/checkout_success.html', {'order': order})
-

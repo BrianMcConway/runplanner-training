@@ -1,0 +1,27 @@
+{% extends "account/base_entrance.html" %}
+{% load i18n %}
+
+{% block head_title %}
+    {% trans "Logout" %}
+{% endblock head_title %}
+
+{% block inner_content %}
+    <div class="container mt-5">
+        <h2 class="mb-4">{% trans "Logout" %}</h2>
+        
+        <p>
+            {% trans "Are you sure you want to log out?" %}
+        </p>
+        
+        <form method="post" action="{% url 'account_logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Confirm Logout</button>
+            <a href="{% url 'home' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+        
+        <!-- Unique Marker for Verification -->
+        <div id="custom-logout-template">
+            This is the CUSTOM logout template.
+        </div>
+    </div>
+{% endblock inner_content %}
