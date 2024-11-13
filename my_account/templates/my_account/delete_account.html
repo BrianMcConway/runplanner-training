@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load i18n %}
+
+{% block head_title %}
+    {% trans "Delete Account" %}
+{% endblock head_title %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2 class="mb-4 text-danger">{% trans "Delete Your Account" %}</h2>
+        
+        <p>{% trans "Are you sure you want to delete your account? This action is irreversible." %}</p>
+        
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">{% trans "Confirm Deletion" %}</button>
+            <a href="{% url 'my_account:profile' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+        </form>
+    </div>
+{% endblock content %}

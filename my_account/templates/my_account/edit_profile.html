@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load i18n %}
+
+{% block head_title %}
+    {% trans "Edit Profile" %}
+{% endblock head_title %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2 class="mb-4">{% trans "Edit Your Profile" %}</h2>
+        
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
+        </form>
+        
+        <!-- Delete Account Section -->
+        <div class="mt-4">
+            <hr>
+            <h4 class="text-danger">{% trans "Delete Account" %}</h4>
+            <p>{% trans "Permanently delete your account. This action cannot be undone." %}</p>
+            <a href="{% url 'my_account:delete_account' %}" class="btn btn-danger">{% trans "Delete My Account" %}</a>
+        </div>
+    </div>
+{% endblock content %}

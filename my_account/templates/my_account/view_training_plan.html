@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% load account_filters %}
+
+{% block head_title %}
+    {{ training_plan.name|replace_underscore }} - {% trans "Details" %}
+{% endblock head_title %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2 class="mb-4">{{ training_plan.name|replace_underscore }}</h2>
+        
+        <div class="card">
+            <div class="card-body">
+                {% if training_plan.image %}
+                    <img src="{{ training_plan.image.url }}" alt="{{ training_plan.name }}" class="img-fluid mb-4">
+                {% else %}
+                    <img src="{% static 'images/placeholder.jpg' %}" alt="Placeholder Image" class="img-fluid mb-4">
+                {% endif %}
+                
+                <h4>{% trans "Description" %}</h4>
+                <p>{{ training_plan.description }}</p>
+                
+                <h4>{% trans "Price" %}</h4>
+                <p>${{ training_plan.price }}</p>
+                
+            </div>
+        </div>
+        
+        <a href="{% url 'my_account:purchased_plans' %}" class="btn btn-secondary mt-3">{% trans "Back to Purchased Plans" %}</a>
+    </div>
+{% endblock content %}

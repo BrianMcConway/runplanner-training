@@ -1,21 +1,16 @@
 {% extends "base.html" %}
 {% load static %}
 {% load account_filters %}
+{% load crispy_forms_tags %}
+{% load i18n %}
 
 {% block content %}
-<h1>My Training Plans</h1>
-<ul>
-    {% for purchase in purchases %}
-        <li>
-            {% if purchase.training_plan.image %}
-                <img src="{{ purchase.training_plan.image.url }}" alt="Training Plan Image">
-            {% else %}
-                <img src="{% static 'images/placeholder.jpg' %}" alt="Placeholder Image">
-            {% endif %}
-            <h2>{{ purchase.training_plan.name|replace_underscore }}</h2>
-        </li>
-    {% empty %}
-        <li>No training plans purchased yet.</li>
-    {% endfor %}
-</ul>
+<div class="container mt-5">
+    <h1>{% trans "Welcome to Your Account Dashboard" %}</h1>
+        <div class="mt-4 d-flex flex-column align-items-center">
+            <a href="{% url 'my_account:profile' %}" class="btn btn-primary mb-3 w-50">{% trans "View Profile" %}</a>
+            <a href="{% url 'my_account:purchased_plans' %}" class="btn btn-success w-50">{% trans "View Purchased Plans" %}</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

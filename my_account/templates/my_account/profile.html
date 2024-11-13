@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load i18n %}
+{% load account_filters %}
+
+{% block head_title %}
+    {% trans "My Profile" %}
+{% endblock head_title %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2 class="mb-4">{% trans "My Profile" %}</h2>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h4 class="card-title">{% trans "Personal Details" %}</h4>
+                <p><strong>{% trans "Username:" %}</strong> {{ user.username }}</p>
+                <p><strong>{% trans "First Name:" %}</strong> {{ user.first_name }}</p>
+                <p><strong>{% trans "Last Name:" %}</strong> {{ user.last_name }}</p>
+                <p><strong>{% trans "Email:" %}</strong> {{ user.email }}</p>
+                <!-- Add more personal details if needed -->
+                <a href="{% url 'my_account:edit_profile' %}" class="btn btn-primary">{% trans "Edit Profile" %}</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{% trans "Purchased Training Plans" %}</h4>
+                {% if purchases %}
+                    <ul class="list-group">
+                        {% for purchase in purchases %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    {% if purchase.training_plan.image %}
+                                        <img src="{{ purchase.training_plan.image.url }}" alt="Training Plan Image" width="50" height="50" class="me-3">
+                                    {% else %}
+                                        <img src="{% static 'images/placeholder.jpg' %}" alt="Placeholder Image" width="50" height="50" class="me-3">
+                                    {% endif %}
+                                    <strong>{{ purchase.training_plan.title|replace_underscore }}</strong>
+                                </div>
+                                <span class="badge bg-secondary">{{ purchase.purchase_date|date:"F j, Y" }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>{% trans "You have not purchased any training plans yet." %}</p>
+                {% endif %}
+                <a href="{% url 'my_account:purchased_plans' %}" class="btn btn-success mt-3">{% trans "View All Purchased Plans" %}</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
