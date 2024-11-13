@@ -1,0 +1,38 @@
+{% extends "account/base_entrance.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block head_title %}
+    {% trans "Register" %}
+{% endblock head_title %}
+
+{% block inner_content %}
+    <div class="container mt-5">
+        <h2 class="mb-4">{% trans "Register" %}</h2>
+        
+        {% if next %}
+            <div class="alert alert-info" role="alert">
+                {% trans "To continue with your purchase, please register for an account." %}
+            </div>
+        {% endif %}
+        
+        <form method="post" action="{% url 'account_signup' %}">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="hidden" name="next" value="{{ next }}">
+            <button type="submit" class="btn btn-success">Register</button>
+        </form>
+        
+        <p class="mt-3">
+            {% trans "Already have an account?" %}
+            <a href="{% url 'account_login' %}?next={{ next }}">
+                {% trans "Log in here" %}
+            </a>.
+        </p>
+        
+        <!-- Unique Marker for Verification -->
+        <div id="custom-signup-template">
+            This is the CUSTOM signup template.
+        </div>
+    </div>
+{% endblock inner_content %}
