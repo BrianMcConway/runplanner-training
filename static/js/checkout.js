@@ -23,11 +23,36 @@ document.addEventListener("DOMContentLoaded", function () {
     const card = elements.create('card', { hidePostalCode: true });
     card.mount("#card-element");
 
+    // Handle real-time validation errors from the card Element
+    card.on('change', function(event) {
+        var displayError = document.getElementById('card-errors');
+        if (event.error) {
+            displayError.textContent = event.error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+
+    // Spinner control functions
+    function showButtonSpinner() {
+        document.getElementById("button-text").classList.add("d-none");
+        document.getElementById("button-spinner").classList.remove("d-none");
+    }
+
+    function hideButtonSpinner() {
+        document.getElementById("button-text").classList.remove("d-none");
+        document.getElementById("button-spinner").classList.add("d-none");
+    }
+
     // Handle form submission
     const form = document.getElementById("payment-form");
     form.addEventListener("submit", function (event) {
         event.preventDefault();
-        document.getElementById("submit-button").disabled = true;
+        const submitButton = document.getElementById("submit-button");
+        submitButton.disabled = true;
+
+        // Show the spinner
+        showButtonSpinner();
 
         // Collect form data
         const formData = new FormData(form);
@@ -45,7 +70,8 @@ document.addEventListener("DOMContentLoaded", function () {
             if (data.error) {
                 console.error("Order creation error:", data.error);
                 document.getElementById("card-errors").textContent = data.error;
-                document.getElementById("submit-button").disabled = false;
+                submitButton.disabled = false;
+                hideButtonSpinner();
             } else {
                 const clientSecret = data.client_secret;
                 const orderId = data.order_id;
@@ -72,7 +98,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (result.error) {
                         console.error("Payment error:", result.error.message);
                         document.getElementById("card-errors").textContent = result.error.message;
-                        document.getElementById("submit-button").disabled = false;
+                        submitButton.disabled = false;
+                        hideButtonSpinner();
                     } else if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
                         console.log("Payment succeeded, initiating polling for order confirmation.");
 
@@ -93,6 +120,8 @@ document.addEventListener("DOMContentLoaded", function () {
                                 .catch(error => {
                                     console.error("Error checking payment status:", error);
                                     document.getElementById("card-errors").textContent = "An error occurred while verifying payment. Please try again.";
+                                    submitButton.disabled = false;
+                                    hideButtonSpinner();
                                 });
                         }
 
@@ -105,7 +134,8 @@ document.addEventListener("DOMContentLoaded", function () {
         .catch(error => {
             console.error("Error:", error);
             document.getElementById("card-errors").textContent = "An error occurred. Please try again.";
-            document.getElementById("submit-button").disabled = false;
+            submitButton.disabled = false;
+            hideButtonSpinner();
         });
     });
 });

@@ -1,21 +1,101 @@
-/* Background for all pages */
-html {
+/* =====================================================
+   Global Styles
+   ===================================================== */
+
+/* Ensure the html and body take full height and have no margin */
+html, body {
     height: 100%;
+    margin: 0;
 }
 
-/* Background for pages with images */
+/* Body Font */
+body {
+    font-family: 'Lato', sans-serif;
+}
+
+/* =====================================================
+   Layout Spacing
+   ===================================================== */
+
+/* Main Content Styles */
+.main-content {
+    padding-bottom: 100px; /* Space for footer */
+    padding-top: 130px; /* Offset for fixed header height */
+}
+
+/* =====================================================
+   Footer Styles
+   ===================================================== */
+
+/* General Footer Styles */
+footer {
+    background-color: #343a40; /* Dark background */
+    color: #ffffff; /* White text */
+    padding-top: 20px;
+    padding-bottom: 20px;
+    position: relative;
+    margin-top: auto;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Footer Links */
+footer a {
+    color: #ffffff;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: #ffc107; /* Bootstrap warning color (gold/yellow) */
+    text-decoration: none;
+}
+
+/* Warning Text in Footer */
+footer .text-warning {
+    color: #ffc107 !important;
+}
+
+/* Warning Buttons in Footer */
+footer .input-group .btn-warning {
+    background-color: #ffc107;
+    border: none;
+}
+
+footer .input-group .btn-warning:hover {
+    background-color: #e0a800;
+}
+
+/* Footer Icons Spacing */
+.footer-icons a {
+    margin-right: 15px;
+}
+
+/* =====================================================
+   Homepage Background Styles
+   ===================================================== */
+
+/* Background settings for the homepage with a scrollable image */
 .default-page {
-    background: url('/media/running.jpg') no-repeat center center fixed;
+    background: url('/media/running.jpg') no-repeat center center;
     background-size: cover;
-    min-height: calc(100vh - 130px); /* Adjusted for header height */
-    color: #555;
+    background-attachment: scroll; /* Ensure the background image moves with the page */
+    box-sizing: border-box; /* Ensures padding is included in min-height */
+    min-height: calc(100vh - 130px - 100px); /* Full viewport height minus header and footer */
     display: flex;
-    align-items: center; /* Vertically centers the content */
-    justify-content: flex-start; /* Aligns content to the left */
-    padding-left: 50px; /* Adjust as needed for spacing from the left */
+    flex-direction: column;
+    padding-top: 130px; /* Offset for fixed header */
+    padding-bottom: 100px; /* Offset for footer */
 }
 
-/* Repositioning background image on smaller screens */
+/* Footer specific adjustments on the homepage */
+.default-page footer {
+    position: relative;
+    margin-top: auto;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Repositioning background image on medium screens */
 @media (max-width: 992px) {
     .default-page {
         background-position: 70% center;
@@ -23,6 +103,7 @@ html {
     }
 }
 
+/* Repositioning background image on small screens */
 @media (max-width: 576px) {
     .default-page {
         background-position: 80% center;
@@ -30,21 +111,22 @@ html {
     }
 }
 
+/* =====================================================
+   Plain Background Styles
+   ===================================================== */
+
 /* Background for plain color pages */
 .plain-background {
     background-color: #f0f0f0;
     min-height: 100vh;
     color: #555;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-body {
-    font-family: 'Lato';
-}
+/* =====================================================
+   Button Styles
+   ===================================================== */
 
-/* Buttons */
+/* Primary Buttons */
 .check-out-plans-button,
 .btn-black {
     background: #302e2e;
@@ -60,6 +142,23 @@ body {
     background: #222;
     color: white;
 }
+
+/* Add to Basket Button */
+.add-to-basket {
+    width: fit-content;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    background-color: #007bff;
+    color: white;
+}
+
+.add-to-basket:hover {
+    background-color: #0056b3;
+}
+
+/* =====================================================
+   Form Styles
+   ===================================================== */
 
 /* Ensure uniform form field size across all screen sizes */
 .form-container {
@@ -78,7 +177,7 @@ input, select, .btn-primary {
     max-width: 100%;
 }
 
-/* Ensure proper spacing */
+/* Ensure proper spacing for inputs and selects */
 input, select {
     margin-bottom: 15px;
 }
@@ -90,18 +189,9 @@ input, select {
     }
 }
 
-/* Style for the Add to Basket button */
-.add-to-basket {
-    width: fit-content;
-    padding: 10px 20px;
-    font-size: 1.2rem;
-    background-color: #007bff;
-    color: white;
-}
-
-.add-to-basket:hover {
-    background-color: #0056b3;
-}
+/* =====================================================
+   Navbar Styles
+   ===================================================== */
 
 /* Move hamburger away from the left edge */
 .navbar-toggler {
@@ -168,3 +258,53 @@ input, select {
     }
 }
 
+/* =====================================================
+   Message Container Styles
+   ===================================================== */
+
+/* Container for displaying messages */
+.message-container {
+    padding: 10px;
+    margin-top: 70px; /* Adjust based on header height */
+    z-index: 1000;
+    position: relative;
+}
+
+/* =====================================================
+   Homepage Specific Styles
+   ===================================================== */
+
+/* Apply background image to body when homepage class is present */
+body.homepage {
+    /* Set the background image */
+    background: url('/media/running.jpg') no-repeat center center fixed;
+    background-size: cover;
+    
+    /* Optional: Add a fallback background color */
+    background-color: #000;
+    
+    /* Ensure the body takes the full height */
+    min-height: 100vh;
+    
+    /* Remove any default margins */
+    margin: 0;
+}
+
+/* Ensure the main content doesn't add extra padding on the homepage */
+body.homepage .main-content {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* Adjust the container to span the full height */
+body.homepage .main-content .container {
+    min-height: calc(100vh - 130px - 100px); /* Adjust based on header and footer heights */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Push footer to the bottom on the homepage */
+body.homepage footer {
+    margin-top: auto;
+}
