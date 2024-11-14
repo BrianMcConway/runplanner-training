@@ -32,9 +32,9 @@
                 <h5 class="text-uppercase mb-4 font-weight-bold text-warning">Newsletter</h5>
                 <form method="POST" action="#">
                     {% csrf_token %}
-                    <div class="input-group">
+                    <div class="input-group d-flex align-items-stretch">
                         <input type="email" name="email" class="form-control" placeholder="Your email" required>
-                        <button type="submit" class="btn btn-warning">Subscribe</button>
+                        <button type="submit" class="btn btn-warning h-100">Subscribe</button>
                     </div>
                 </form>
                 {% if messages %}
@@ -47,7 +47,7 @@
                     </div>
                 {% endif %}
             </div>
-
+            
             <!-- Social Media Links -->
             <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mt-3 footer-icons">
                 <h5 class="text-uppercase mb-4 font-weight-bold text-warning">Follow Us</h5>

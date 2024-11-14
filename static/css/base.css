@@ -2,6 +2,11 @@
    Global Styles
    ===================================================== */
 
+/* Apply border-box globally for consistency */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 /* Ensure the html and body take full height and have no margin */
 html, body {
     height: 100%;
@@ -34,8 +39,6 @@ footer {
     padding-top: 20px;
     padding-bottom: 20px;
     position: relative;
-    margin-top: auto;
-    bottom: 0;
     width: 100%;
 }
 
@@ -46,19 +49,33 @@ footer a {
 }
 
 footer a:hover {
-    color: #ffc107; /* Bootstrap warning color (gold/yellow) */
+    color: #ffc107;
     text-decoration: none;
 }
 
-/* Warning Text in Footer */
-footer .text-warning {
-    color: #ffc107 !important;
+/* Newsletter Subscription Styling */
+footer .input-group {
+    display: flex;
 }
 
-/* Warning Buttons in Footer */
+/* Newsletter Subscription Styling */
+footer .input-group .form-control {
+    border-radius: 5px 0 0 5px; /* Rounded left corners only */
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+}
+
 footer .input-group .btn-warning {
     background-color: #ffc107;
     border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    border-radius: 0 5px 5px 0; /* Rounded right corners only */
 }
 
 footer .input-group .btn-warning:hover {
@@ -69,6 +86,7 @@ footer .input-group .btn-warning:hover {
 .footer-icons a {
     margin-right: 15px;
 }
+
 
 /* =====================================================
    Homepage Background Styles
@@ -281,7 +299,7 @@ body.homepage {
     background-size: cover;
     
     /* Optional: Add a fallback background color */
-    background-color: #000;
+    background-color: #f0f0f0;
     
     /* Ensure the body takes the full height */
     min-height: 100vh;

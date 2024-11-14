@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'basket_v2',
     'checkout_v2',
     'contact',
+    'pages',
     'my_account.apps.MyAccountConfig',
     'crispy_forms',
     'crispy_bootstrap5',
