@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+{% load account_filters %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Card Container for Styling -->
+    <div class="card shadow-lg mx-auto" style="max-width: 900px; border: none; padding: 20px;">
+        <div class="text-center">
+            <h2 class="mb-3">Training Plan Details</h2>
+
+            <!-- Plan Description Section -->
+            <h3 class="mb-2">{{ training_plan.name|replace_underscore }}</h3>
+            <p><strong>Plan Description:</strong></p>
+            <p>
+                <strong>Distance:</strong> {{ training_plan.distance|replace_underscore }}<br>
+                <strong>Difficulty:</strong> {{ training_plan.difficulty|replace_underscore }}<br>
+                <strong>Price:</strong> €{{ training_plan.price|floatformat:2 }}
+            </p>
+        </div>
+
+        <!-- Image Section with Reduced Margins -->
+        <div class="text-center mt-2 mb-3">
+            <img src="{% static 'images/training-plan-purchased.jpg' %}" 
+                 alt="{{ training_plan.name }}" 
+                 class="img-fluid rounded" 
+                 style="width: 100%; max-width: 1200px; height: auto;">
+        </div>
+
+        <!-- Back Button Positioned Directly Under Image -->
+        <div class="text-center mt-2">
+            <a href="{% url 'my_account:purchased_plans' %}" class="btn btn-secondary">Back to Purchased Plans</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

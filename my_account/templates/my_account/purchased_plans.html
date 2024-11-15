@@ -25,14 +25,7 @@
                 <tbody>
                     {% for purchase in purchases %}
                         <tr>
-                            <td>
-                                {% if purchase.training_plan.image %}
-                                    <img src="{{ purchase.training_plan.image.url }}" alt="Training Plan Image" width="50" height="50" class="me-2">
-                                {% else %}
-                                    <img src="{% static 'images/placeholder.jpg' %}" alt="Placeholder Image" width="50" height="50" class="me-2">
-                                {% endif %}
-                                {{ purchase.training_plan.name|replace_underscore }}
-                            </td>
+                            <td>{{ purchase.training_plan.name|replace_underscore }}</td>
                             <td>{{ purchase.purchase_date|date:"F j, Y" }}</td>
                             <td>
                                 {% if purchase.payment_verified %}
@@ -42,8 +35,8 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="{% url 'my_account:view_training_plan' purchase.id %}" class="btn btn-primary btn-sm">{% trans "View Details" %}</a>
-                                <!-- Add more action buttons if needed -->
+                                <a href="{% url 'my_account:view_training_plan' purchase.id %}" 
+                                   class="btn btn-primary btn-sm">{% trans "View Training Plan" %}</a>
                             </td>
                         </tr>
                     {% endfor %}

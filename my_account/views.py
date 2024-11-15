@@ -8,6 +8,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
 from basket_v2.models import BasketItem
 
+
 class CustomLoginView(LoginView):
     """
     Custom login view that transfers session-based basket items
@@ -33,6 +34,7 @@ class CustomLoginView(LoginView):
         # Redirect to checkout after login
         return redirect('checkout_v2:checkout')
 
+
 @login_required
 def my_account(request):
     """
@@ -42,6 +44,7 @@ def my_account(request):
     purchases = Purchase.objects.filter(user=request.user, payment_verified=True)
     return render(request, 'my_account/my_account.html', {'purchases': purchases})
 
+
 @login_required
 def profile(request):
     """
@@ -49,6 +52,7 @@ def profile(request):
     Displays user's personal details.
     """
     return render(request, 'my_account/profile.html', {'user': request.user})
+
 
 @login_required
 def edit_profile(request):
@@ -68,6 +72,7 @@ def edit_profile(request):
         form = EditProfileForm(instance=request.user)
     return render(request, 'my_account/edit_profile.html', {'form': form})
 
+
 @login_required
 def purchased_plans(request):
     """
@@ -76,6 +81,7 @@ def purchased_plans(request):
     """
     purchases = Purchase.objects.filter(user=request.user, payment_verified=True)
     return render(request, 'my_account/purchased_plans.html', {'purchases': purchases})
+
 
 @login_required
 def view_training_plan(request, id):
@@ -89,7 +95,8 @@ def view_training_plan(request, id):
     # Fetch the associated training plan (Product)
     training_plan = get_object_or_404(Product, id=purchase.training_plan.id)
     
-    return render(request, 'my_account/view_training_plan.html', {'training_plan': training_plan})
+    return render(request, 'my_account/training_plan_details.html', {'training_plan': training_plan})
+
 
 @login_required
 def delete_account(request):
