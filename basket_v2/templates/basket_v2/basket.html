@@ -34,6 +34,9 @@
         </div>
     {% else %}
         <p class="text-center">Your basket is empty.</p>
+        <div class="text-center mt-4">
+            <a href="{% url 'products_v2:training_plans' %}" class="btn btn-primary btn-lg mx-auto" style="max-width: 250px;">Choose Training Plan</a>
+        </div>
     {% endif %}
 </div>
 {% endblock %}
