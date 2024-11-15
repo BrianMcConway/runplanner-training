@@ -1,10 +1,37 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Purchase
 from products_v2.models import Product
 from django.contrib.auth.decorators import login_required
 from .forms import EditProfileForm
 from django.contrib import messages
 from django.contrib.auth import logout
+from django.contrib.auth.views import LoginView
+from basket_v2.models import BasketItem
+
+class CustomLoginView(LoginView):
+    """
+    Custom login view that transfers session-based basket items
+    to the user's database-backed basket upon login.
+    """
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        session_basket = self.request.session.get('basket', {})
+
+        # Move session basket to user basket
+        for item_slug, item_data in session_basket.items():
+            product = Product.objects.get(slug=item_slug)
+            quantity = item_data['quantity']
+            BasketItem.objects.update_or_create(
+                user=self.request.user,
+                product=product,
+                defaults={'quantity': quantity}
+            )
+
+        # Clear the session basket
+        self.request.session['basket'] = {}
+
+        # Redirect to checkout after login
+        return redirect('checkout_v2:checkout')
 
 @login_required
 def my_account(request):

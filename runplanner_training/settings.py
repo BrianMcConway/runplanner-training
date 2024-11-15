@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'home',
     'products_v2',
-    'basket_v2',
+    'basket_v2.apps.BasketV2Config',
     'checkout_v2',
     'contact',
     'pages',

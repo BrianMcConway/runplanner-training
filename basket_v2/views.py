@@ -1,55 +1,87 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from products_v2.models import Product
+from .models import BasketItem
 
-# Create a simple basket class to interact with the session
 class Basket:
     def __init__(self, request):
         self.session = request.session
-        basket = self.session.get('basket')
-        if not basket:
-            # Initialize basket in the session if it doesn't exist
-            basket = self.session['basket'] = {}
-        self.basket = basket
+        self.user = request.user
+        self.basket = self.session.get('basket', {})
 
     def add(self, product, quantity=1):
-        """Add a product to the basket or update its quantity."""
         product_slug = str(product.slug)
-        if product_slug not in self.basket:
-            # Add new item to the basket with initial quantity
-            self.basket[product_slug] = {
-                'name': product.name,
-                'price': str(product.price),
-                'quantity': quantity,
-                'slug': product_slug,  # Ensure slug is saved for identification
-            }
+
+        if self.user.is_authenticated:
+            # Save or update the item in the database for authenticated users
+            basket_item, created = BasketItem.objects.get_or_create(
+                user=self.user, product=product
+            )
+            if not created:
+                basket_item.quantity += quantity
+            basket_item.save()
         else:
-            # Update the quantity if the item is already in the basket
-            self.basket[product_slug]['quantity'] += quantity
-        self.save()
+            # Save to session for unauthenticated users
+            if product_slug not in self.basket:
+                self.basket[product_slug] = {
+                    'name': product.name,
+                    'price': str(product.price),
+                    'quantity': quantity,
+                    'slug': product_slug,
+                }
+            else:
+                self.basket[product_slug]['quantity'] += quantity
+            self.save()
 
     def save(self):
         """Mark the session as modified to ensure data is saved."""
+        self.session['basket'] = self.basket
         self.session.modified = True
 
     def remove(self, product_slug):
-        """Remove an item from the basket by its slug."""
-        if product_slug in self.basket:
-            del self.basket[product_slug]
-            self.save()
+        if self.user.is_authenticated:
+            # Remove from the database if the user is authenticated
+            BasketItem.objects.filter(user=self.user, product__slug=product_slug).delete()
+        else:
+            # Remove from session if not authenticated
+            if product_slug in self.basket:
+                del self.basket[product_slug]
+                self.save()
 
     def get_items(self):
-        """Return all items in the basket."""
-        return self.basket.values()
+        items = []
+        if self.user.is_authenticated:
+            # Load items from the database for authenticated users
+            user_items = BasketItem.objects.filter(user=self.user)
+            for item in user_items:
+                items.append({
+                    'name': item.product.name,
+                    'price': str(item.product.price),
+                    'quantity': item.quantity,
+                    'slug': item.product.slug,
+                })
+        else:
+            # Load items from the session for unauthenticated users
+            items = self.basket.values()
+        return items
 
     def get_total_price(self):
-        """Calculate the total price of items in the basket."""
-        total = sum(float(item['price']) * item['quantity'] for item in self.basket.values())
+        total = 0
+        if self.user.is_authenticated:
+            # Calculate total for authenticated users
+            total = sum(item.product.price * item.quantity for item in BasketItem.objects.filter(user=self.user))
+        else:
+            # Calculate total for session items
+            total = sum(float(item['price']) * item['quantity'] for item in self.basket.values())
         return total
 
     def clear(self):
-        """Clear the entire basket from the session."""
-        self.session['basket'] = {}
-        self.save()
+        if self.user.is_authenticated:
+            # Clear database basket items for authenticated users
+            BasketItem.objects.filter(user=self.user).delete()
+        else:
+            # Clear session basket for unauthenticated users
+            self.session['basket'] = {}
+            self.save()
 
 
 def add_to_basket(request, slug):
