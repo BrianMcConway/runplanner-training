@@ -326,3 +326,40 @@ body.homepage .main-content .container {
 body.homepage footer {
     margin-top: auto;
 }
+
+/* =====================================================
+   Basket Styles
+   ===================================================== */
+
+/* Add a container-specific style for the basket item */
+.basket-item-container {
+    background-color: #ffffff; /* White background for contrast */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for a lifted effect */
+}
+
+/* Style individual item information for better separation */
+.basket-item-container p {
+    margin: 0;
+    padding: 8px 0;
+    border-bottom: 1px solid #e0e0e0; /* Light grey border for separation */
+}
+
+/* Remove border from the last item */
+.basket-item-container p:last-child {
+    border-bottom: none;
+}
+
+/* Optional styling to align text */
+.basket-item-container .item-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.basket-item-container .item-price,
+.basket-item-container .item-quantity,
+.basket-item-container .item-total {
+    color: #333;
+    font-size: 0.9rem;
+}

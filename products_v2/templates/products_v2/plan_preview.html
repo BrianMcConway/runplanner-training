@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+<!--{% extends "base.html" %}
 {% load static %}
 
 {% block body_class %}plain-background{% endblock %}
@@ -10,7 +10,7 @@
     <h1>Training Plan Preview</h1>
 
     <div class="mb-4">
-        <img src="{{ MEDIA_URL }}training-plan-sample-test.jpg" alt="Training Plan Sample" class="img-fluid rounded" style="max-width: 500px;">
+        <img src="{% static 'track-and-field.jpg' %}" alt="Training Plan Sample Image" class="img-fluid rounded" style="max-width: 500px;">
     </div>
 
     <ul class="list-unstyled">
@@ -26,4 +26,4 @@
         <a href="{% url 'basket_v2:add_to_basket' plan.slug %}" class="btn btn-primary btn-lg" style="width: 48%;">Add to Basket</a>
     </div>
 </div>
-{% endblock %}
+{% endblock %}-->

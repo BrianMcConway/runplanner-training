@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% load crispy_forms_tags %}
 
 {% block body_class %}plain-background{% endblock %}
@@ -17,23 +18,33 @@
     </div>
 
     {% if preview_plan %}
-        <!-- Distinct Section for Plan Preview -->
-        <div class="plan-preview mt-5 p-4 rounded" style="background-color: #f8f9fa; max-width: 600px; margin: 0 auto;">
-            <h3>Training Plan Preview: {{ preview_plan.name }}</h3>
-            <img src="{{ MEDIA_URL }}training-plan-sample-test.jpg" alt="Training Plan Sample" class="img-fluid rounded" style="max-width: 500px;">
-            <ul class="list-unstyled mt-3">
-                <li><strong>Distance:</strong> {{ preview_plan.distance }}</li>
-                <li><strong>Difficulty:</strong> {{ preview_plan.difficulty }}</li>
-                <li><strong>Terrain:</strong> {{ preview_plan.terrain }}</li>
-                <li><strong>Elevation:</strong> {{ preview_plan.elevation }}</li>
-                <li><strong>Price:</strong> €{{ preview_plan.price|floatformat:2 }}</li>
-            </ul>
-
-            <!-- Centered Button Aligned to Preview Content Width -->
-            <div class="mt-4" style="max-width: 500px; margin: 0 auto;">
-                <a href="{% url 'basket_v2:add_to_basket' preview_plan.slug %}" class="btn btn-primary btn-lg" style="width: 100%;">Add to Basket</a>
-            </div>
+    <!-- Distinct Section for Plan Preview -->
+    <div class="plan-preview mt-5 p-4 rounded" style="background-color: #f8f9fa; max-width: 600px; margin: 0 auto;">
+        <h3>Training Plan Preview: {{ preview_plan.name }}</h3>
+        
+        <!-- Responsive Image Container -->
+        <div class="mb-4">
+            <img src="{% static 'images/training-plan-sample-test.jpg' %}" 
+                 alt="Training Plan Sample Image" 
+                 class="img-fluid rounded w-100" 
+                 style="max-height: 300px; object-fit: cover;">
         </div>
-    {% endif %}
+
+        <!-- Plan Details -->
+        <ul class="list-unstyled mt-3">
+            <li><strong>Distance:</strong> {{ preview_plan.distance }}</li>
+            <li><strong>Difficulty:</strong> {{ preview_plan.difficulty }}</li>
+            <li><strong>Terrain:</strong> {{ preview_plan.terrain }}</li>
+            <li><strong>Elevation:</strong> {{ preview_plan.elevation }}</li>
+            <li><strong>Price:</strong> €{{ preview_plan.price|floatformat:2 }}</li>
+        </ul>
+
+        <!-- Centered Button Aligned to Preview Content Width -->
+        <div class="mt-4" style="max-width: 500px; margin: 0 auto;">
+            <a href="{% url 'basket_v2:add_to_basket' preview_plan.slug %}" class="btn btn-primary btn-lg" style="width: 100%;">Add to Basket</a>
+        </div>
+    </div>
+{% endif %}
+
 </div>
 {% endblock %}
