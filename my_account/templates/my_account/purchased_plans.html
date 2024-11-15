@@ -9,43 +9,51 @@
 {% endblock head_title %}
 
 {% block content %}
-    <div class="container mt-5">
-        <h2 class="mb-4">{% trans "My Purchased Training Plans" %}</h2>
-        
-        {% if purchases %}
-            <table class="table table-striped">
-                <thead>
+<div class="container mt-5">
+    <h2 class="text-center mb-4">{% trans "My Purchased Training Plans" %}</h2>
+
+    {% if purchases %}
+        <!-- Bootstrap Responsive Table Wrapper -->
+        <div class="table-responsive">
+            <table class="table table-bordered text-center">
+                <thead class="table-light">
                     <tr>
-                        <th scope="col">{% trans "Plan Name" %}</th>
-                        <th scope="col">{% trans "Purchase Date" %}</th>
-                        <th scope="col">{% trans "Status" %}</th>
-                        <th scope="col">{% trans "Actions" %}</th>
+                        <th scope="col" class="col-3">{% trans "Plan Name" %}</th>
+                        <th scope="col" class="col-3">{% trans "Purchase Date" %}</th>
+                        <th scope="col" class="col-2">{% trans "Status" %}</th>
+                        <th scope="col" class="col-2">{% trans "Actions" %}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for purchase in purchases %}
                         <tr>
-                            <td>{{ purchase.training_plan.name|replace_underscore }}</td>
-                            <td>{{ purchase.purchase_date|date:"F j, Y" }}</td>
-                            <td>
+                            <td class="plan-name">{{ purchase.training_plan.name|replace_underscore }}</td>
+                            <td class="purchase-date">{{ purchase.purchase_date|date:"F j, Y" }}</td>
+                            <td class="status">
                                 {% if purchase.payment_verified %}
                                     <span class="badge bg-success">{% trans "Verified" %}</span>
                                 {% else %}
                                     <span class="badge bg-warning">{% trans "Pending" %}</span>
                                 {% endif %}
                             </td>
-                            <td>
+                            <td class="actions">
                                 <a href="{% url 'my_account:view_training_plan' purchase.id %}" 
-                                   class="btn btn-primary btn-sm">{% trans "View Training Plan" %}</a>
+                                   class="btn btn-primary btn-sm w-100">{% trans "View Training Plan" %}</a>
                             </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
-        {% else %}
-            <p>{% trans "You have no purchases yet." %}</p>
-        {% endif %}
-        
-        <a href="{% url 'my_account:my_account' %}" class="btn btn-success mt-3">{% trans "Return To Account Dashboard" %}</a>
+        </div>
+    {% else %}
+        <p class="text-center">{% trans "You have no purchases yet." %}</p>
+    {% endif %}
+
+    <!-- Centered Button for Dashboard Link -->
+    <div class="text-center mt-4">
+        <a href="{% url 'my_account:my_account' %}" class="btn btn-success">
+            {% trans "Return To Account Dashboard" %}
+        </a>
     </div>
+</div>
 {% endblock content %}
