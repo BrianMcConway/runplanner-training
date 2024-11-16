@@ -147,7 +147,16 @@
 </div>
 
 <!-- Post-load JavaScript block for page-specific scripts -->
-{% block postloadjs %}{% endblock %}
+{% block postloadjs %}
+    <!-- Mailchimp CSS (Make sure it's loaded in the <head> or here) -->
+    <link href="//cdn-images.mailchimp.com/embedcode/classic-061523.css" rel="stylesheet" type="text/css">
+    
+    <!-- Mailchimp JavaScript -->
+    <script src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"></script>
+    
+    <!-- Custom script.js -->
+    <script src="{% static 'js/script.js' %}"></script>
+{% endblock %}
 
 </body>
 </html>

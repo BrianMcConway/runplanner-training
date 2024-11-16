@@ -29,25 +29,30 @@
 
             <!-- Newsletter Subscription -->
             <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
-                <h5 class="text-uppercase mb-4 font-weight-bold text-warning">Newsletter</h5>
-                <form method="POST" action="#">
-                    {% csrf_token %}
-                    <div class="input-group d-flex align-items-stretch">
-                        <input type="email" name="email" class="form-control" placeholder="Your email" required>
-                        <button type="submit" class="btn btn-warning h-100">Subscribe</button>
-                    </div>
-                </form>
-                {% if messages %}
-                    <div class="mt-2">
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }} p-1 m-0" role="alert">
-                                {{ message }}
+                <div id="mc_embed_shell">
+                    <div id="mc_embed_signup">
+                        <form action="https://herokuapp.us14.list-manage.com/subscribe/post?u=ed21b46cf1c9cbb5fb742802f&amp;id=d74d7c2923&amp;f_id=0080fde0f0" 
+                              method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
+                            <div id="mc_embed_signup_scroll">
+                                <h2>Subscribe to our Newsletter</h2>
+                                <div class="mc-field-group">
+                                    <input type="email" name="EMAIL" class="required email" id="mce-EMAIL" placeholder="Enter your email address" required>
+                                </div>
+                                <div id="mce-responses" class="clear foot">
+                                    <div class="response" id="mce-error-response"></div>
+                                    <div class="response visible" id="mce-success-response">You're already subscribed, your profile has been updated. Thank you!</div>
+                                </div>
+                                <div class="optionalParent">
+                                    <div class="clear foot">
+                                        <input type="submit" name="subscribe" id="mc-embedded-subscribe" class="button" value="Subscribe">
+                                    </div>
+                                </div>
                             </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+                        </form>
+                    </div>                    
+                </div>
             </div>
-            
+
             <!-- Social Media Links -->
             <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mt-3 footer-icons">
                 <h5 class="text-uppercase mb-4 font-weight-bold text-warning">Follow Us</h5>
