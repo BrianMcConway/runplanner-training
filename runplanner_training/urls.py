@@ -15,6 +15,7 @@ urlpatterns = [
     path('', include('pages.urls')),
     path('blog/', include('blog.urls', namespace='blog')),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('markdownx/', include('markdownx.urls')),
 ]
 
 # Serve media files in development
