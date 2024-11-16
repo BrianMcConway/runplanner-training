@@ -29,6 +29,57 @@ body {
 }
 
 /* =====================================================
+   Fullscreen Header
+   ===================================================== */
+
+/* Adjust header alignment */
+#topnav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px; /* Adds padding to bring content closer to the edge */
+}
+
+/* Logo alignment */
+#topnav h2 {
+    margin: 0;
+    padding-left: 20px; /* Keeps the logo slightly to the left */
+    text-align: left;
+}
+
+/* Icons alignment */
+#topnav .list-inline {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-right: 50px; /* Move the icons closer to the center */
+}
+
+/* Account and basket alignment */
+#topnav #account-icon,
+#topnav #basket-icon {
+    margin-left: 15px; /* Add some spacing between the two icons */
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 992px) {
+    #topnav {
+        flex-direction: column;
+        padding: 0;
+    }
+    #topnav h2 {
+        text-align: center;
+        padding-left: 0;
+    }
+    #topnav .list-inline {
+        justify-content: center;
+        margin-top: 10px;
+        margin-right: 0; /* Reset margin for smaller screens */
+    }
+}
+
+
+/* =====================================================
    Footer Styles
    ===================================================== */
 
