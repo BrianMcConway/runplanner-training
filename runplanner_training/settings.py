@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'contact',
     'pages',
     'my_account.apps.MyAccountConfig',
+    'blog',
     'crispy_forms',
     'crispy_bootstrap5',
 ]
@@ -176,23 +177,7 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True  # Redirect all HTTP traffic to HTTPS
-
-# Logging (Optional)
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'ERROR',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'error.log'),
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    },
-}
+    
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'blog:post_list'
+LOGOUT_REDIRECT_URL = 'blog:post_list'

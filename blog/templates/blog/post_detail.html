@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ post.title }}</h1>
+<p><small>Published on {{ post.created_at|date:"F j, Y, g:i a" }} by {{ post.author.username }}</small></p>
+<p>{{ post.content }}</p>
+
+{% if user.is_staff %}
+    <a href="{% url 'blog:post_edit' post.pk %}">Edit Post</a> |
+    <a href="{% url 'blog:post_delete' post.pk %}">Delete Post</a>
+{% endif %}
+
+<hr>
+<h2>Comments</h2>
+
+{% for comment in comments %}
+    <div class="comment">
+        <p><strong>{{ comment.commenter.username }}</strong> commented on {{ comment.created_at|date:"F j, Y, g:i a" }}:</p>
+        <p>{{ comment.content }}</p>
+        {% if comment.commenter == user %}
+            <a href="{% url 'blog:comment_edit' comment.pk %}">Edit</a> |
+            <a href="{% url 'blog:comment_delete' comment.pk %}">Delete</a>
+        {% endif %}
+        <hr>
+    </div>
+{% empty %}
+    <p>No comments yet.</p>
+{% endfor %}
+
+{% if user.is_authenticated %}
+    <h3>Add a Comment</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ comment_form }}
+        <button type="submit" class="btn btn-primary">Post Comment</button>
+    </form>
+{% else %}
+    <p><a href="{% url 'login' %}">Log in</a> to post a comment.</p>
+{% endif %}
+
+{% endblock %}

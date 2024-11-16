@@ -13,6 +13,8 @@ urlpatterns = [
     path('contact/', include('contact.urls')),
     path('my_account/', include('my_account.urls')),
     path('', include('pages.urls')),
+    path('blog/', include('blog.urls', namespace='blog')),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
 
 # Serve media files in development

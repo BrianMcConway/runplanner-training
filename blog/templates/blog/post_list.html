@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Blog Posts</h1>
+
+{% if user.is_staff %}
+    <a href="{% url 'blog:post_create' %}" class="btn btn-primary">Create New Post</a>
+{% endif %}
+
+<hr>
+
+{% for post in posts %}
+    <div class="post">
+        <h2>
+            <a href="{% url 'blog:post_detail' slug=post.slug %}">{{ post.title }}</a>
+        </h2>
+        <p>
+            <small>Published on {{ post.created_at|date:"F j, Y, g:i a" }} by {{ post.author.username }}</small>
+        </p>
+        <p>{{ post.content|truncatewords:30 }}</p>
+        {% if user.is_staff %}
+            <a href="{% url 'blog:post_edit' slug=post.slug %}">Edit</a> |
+            <a href="{% url 'blog:post_delete' slug=post.slug %}">Delete</a>
+        {% endif %}
+        <hr>
+    </div>
+{% empty %}
+    <p>No posts yet.</p>
+{% endfor %}
+{% endblock %}
