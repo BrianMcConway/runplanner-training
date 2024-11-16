@@ -6,10 +6,25 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1>{% trans "Welcome to Your Account Dashboard" %}</h1>
-        <div class="mt-4 d-flex flex-column align-items-center">
-            <a href="{% url 'my_account:profile' %}" class="btn btn-primary mb-3 w-50">{% trans "View Profile" %}</a>
-            <a href="{% url 'my_account:purchased_plans' %}" class="btn btn-success w-50">{% trans "View Purchased Plans" %}</a>
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <h1 class="text-center mb-4">{% trans "Welcome to Your Account Dashboard" %}</h1>
+            
+            <!-- Instructional Text -->
+            <p class="text-center text-muted">
+                {% trans "Here you can manage your profile, view your purchased training plans, and access other features related to your account. Select an option below to get started!" %}
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="d-grid gap-2 mt-4">
+                <a href="{% url 'my_account:profile' %}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-user me-2"></i> {% trans "View Profile" %}
+                </a>
+                <a href="{% url 'my_account:purchased_plans' %}" class="btn btn-success btn-sm">
+                    <i class="fas fa-list-ul me-2"></i> {% trans "View Purchased Plans" %}
+                </a>
+            </div>
+
         </div>
     </div>
 </div>
