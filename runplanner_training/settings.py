@@ -180,8 +180,8 @@ if not DEBUG:
     SECURE_SSL_REDIRECT = True  # Redirect all HTTP traffic to HTTPS
     
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'blog:post_list'
-LOGOUT_REDIRECT_URL = 'blog:post_list'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 MARKDOWNX_MARKDOWN_EXTENSIONS = [
     'markdown.extensions.extra',
