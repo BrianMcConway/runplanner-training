@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from products_v2.models import Product
 from .models import BasketItem
 
@@ -89,13 +90,20 @@ def add_to_basket(request, slug):
     product = get_object_or_404(Product, slug=slug)
     basket = Basket(request)
     basket.add(product)
+
+    # Add a success message for adding an item
+    messages.success(request, f"'{product.name}' has been added to your basket!")
     return redirect('basket_v2:show_basket')
 
 
 def remove_from_basket(request, slug):
     """View to remove a product from the basket."""
+    product = get_object_or_404(Product, slug=slug)
     basket = Basket(request)
     basket.remove(slug)
+
+    # Add a warning message for removing an item
+    messages.warning(request, f"'{product.name}' has been removed from your basket.")
     return redirect('basket_v2:show_basket')
 
 
@@ -107,6 +115,10 @@ def show_basket(request):
     # Calculate total price for all items in the basket
     total_price = basket.get_total_price()
 
+    # If the basket is empty, add an informational message
+    if not items:
+        messages.info(request, "Your basket is currently empty.")
+
     return render(request, 'basket_v2/basket.html', {
         'basket': items,
         'total_price': total_price,
@@ -117,4 +129,7 @@ def clear_basket(request):
     """View to clear the entire basket."""
     basket = Basket(request)
     basket.clear()
+
+    # Add an informational message for clearing the basket
+    messages.info(request, "Your basket has been cleared.")
     return redirect('basket_v2:show_basket')

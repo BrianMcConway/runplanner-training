@@ -50,113 +50,116 @@
 
 <body class="{% block body_class %}plain-background{% endblock %}">
 
-<!-- Flex Container -->
-<div class="d-flex flex-column min-vh-100">
-    <header class="container-fluid fixed-top">
-        <!-- Mobile Site Title (Visible only on small screens) -->
-        <div class="row d-block d-lg-none text-center bg-white py-2">
-            <h1 class="logo-font my-0">
-                <a href="{% url 'home' %}" class="text-black" style="text-decoration: none;">
-                    <strong>RunPlanner</strong> Training
-                </a>
-            </h1>
-        </div>
-
-        <!-- Desktop Navigation -->
-        <div id="topnav" class="row bg-white pt-lg-2 d-none d-lg-flex">
-            <div class="col-12 col-lg-4 my-auto py-1 py-lg-0 text-center text-lg-left">
-                <h2 class="logo-font my-0">
+    <!-- Flex Container -->
+    <div class="d-flex flex-column min-vh-100">
+        <header class="container-fluid fixed-top">
+            <!-- Mobile Site Title (Visible only on small screens) -->
+            <div class="row d-block d-lg-none text-center bg-white py-2">
+                <h1 class="logo-font my-0">
                     <a href="{% url 'home' %}" class="text-black" style="text-decoration: none;">
                         <strong>RunPlanner</strong> Training
                     </a>
-                </h2>
+                </h1>
             </div>
-            
-            <div class="col-12 col-lg-4 my-auto py-1 py-lg-0">
-                <ul class="list-inline list-unstyled text-center text-lg-right my-0">
-                    <!-- My Account Dropdown -->
-                    <li class="list-inline-item dropdown" id="account-icon">
-                        <a class="text-black nav-link" href="#" id="user-options" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <div class="text-center">
-                                <i class="fas fa-user fa-lg"></i>
-                                <p class="my-0">My Account</p>
-                            </div>
+    
+            <!-- Desktop Navigation -->
+            <div id="topnav" class="row bg-white pt-lg-2 d-none d-lg-flex">
+                <div class="col-12 col-lg-4 my-auto py-1 py-lg-0 text-center text-lg-left">
+                    <h2 class="logo-font my-0">
+                        <a href="{% url 'home' %}" class="text-black" style="text-decoration: none;">
+                            <strong>RunPlanner</strong> Training
                         </a>
-                        <div class="dropdown-menu border-0" aria-labelledby="user-options">
-                            {% if request.user.is_authenticated %}
-                                <a href="{% url 'my_account:my_account' %}" class="dropdown-item">My Profile</a>
-                                <a href="{% url 'account_logout' %}" class="dropdown-item">Logout</a>
-                            {% else %}
-                                <a href="{% url 'account_signup' %}" class="dropdown-item">Register</a>
-                                <a href="{% url 'account_login' %}" class="dropdown-item">Login</a>
-                            {% endif %}
-                        </div>
-                    </li>
-                    
-                    <!-- Basket Icon with Amount -->
-                    <li class="list-inline-item" id="basket-icon">
-                        <a class="text-black nav-link" href="{% url 'basket_v2:show_basket' %}">
-                            <div class="text-center">
-                                <i class="fas fa-shopping-bag fa-lg"></i>
-                                <p class="my-0">
-                                    €{{ grand_total|floatformat:2 }}
-                                </p>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Mobile Navbar -->
-        <div class="row bg-white">
-            <nav class="navbar navbar-expand-lg navbar-light w-100">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-nav" aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                {% include 'includes/mobile_top_header.html' %}
-
-                <div class="collapse navbar-collapse justify-content-center" id="main-nav">
-                    {% include 'includes/main_nav.html' %}
+                    </h2>
                 </div>
-            </nav>
-        </div>
-    </header>
-
-    <!-- Remove the header-spacer -->
-    <!-- <div class="header-spacer"></div> -->
-
-    <!-- Messages -->
-    {% if messages %}
-        <div class="message-container">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    <!-- Main Content -->
-    <!-- Remove flex-fill and use appropriate padding -->
-    <main class="main-content flex-grow-1">
-        {% block content %}{% endblock %}
-    </main>
-
-    <!-- Footer -->
-    {% include 'includes/footer.html' %}
-</div>
-
-<!-- Post-load JavaScript block for page-specific scripts -->
-{% block postloadjs %}
-    <!-- Mailchimp CSS (Make sure it's loaded in the <head> or here) -->
-    <link href="//cdn-images.mailchimp.com/embedcode/classic-061523.css" rel="stylesheet" type="text/css">
+                
+                <div class="col-12 col-lg-4 my-auto py-1 py-lg-0">
+                    <ul class="list-inline list-unstyled text-center text-lg-right my-0">
+                        <!-- My Account Dropdown -->
+                        <li class="list-inline-item dropdown" id="account-icon">
+                            <a class="text-black nav-link" href="#" id="user-options" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <div class="text-center">
+                                    <i class="fas fa-user fa-lg"></i>
+                                    <p class="my-0">My Account</p>
+                                </div>
+                            </a>
+                            <div class="dropdown-menu border-0" aria-labelledby="user-options">
+                                {% if request.user.is_authenticated %}
+                                    <a href="{% url 'my_account:my_account' %}" class="dropdown-item">My Profile</a>
+                                    <a href="{% url 'account_logout' %}" class="dropdown-item">Logout</a>
+                                {% else %}
+                                    <a href="{% url 'account_signup' %}" class="dropdown-item">Register</a>
+                                    <a href="{% url 'account_login' %}" class="dropdown-item">Login</a>
+                                {% endif %}
+                            </div>
+                        </li>
+                        
+                        <!-- Basket Icon with Amount -->
+                        <li class="list-inline-item" id="basket-icon">
+                            <a class="text-black nav-link" href="{% url 'basket_v2:show_basket' %}">
+                                <div class="text-center">
+                                    <i class="fas fa-shopping-bag fa-lg"></i>
+                                    <p class="my-0">
+                                        €{{ grand_total|floatformat:2 }}
+                                    </p>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
     
-    <!-- Mailchimp JavaScript -->
-    <script src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"></script>
+            <!-- Mobile Navbar -->
+            <div class="row bg-white">
+                <nav class="navbar navbar-expand-lg navbar-light w-100">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-nav" aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
     
-    <!-- Custom script.js -->
-    <script src="{% static 'js/script.js' %}"></script>
-{% endblock %}
+                    {% include 'includes/mobile_top_header.html' %}
+    
+                    <div class="collapse navbar-collapse justify-content-center" id="main-nav">
+                        {% include 'includes/main_nav.html' %}
+                    </div>
+                </nav>
+            </div>
+        </header>
+    
+        <!-- Main Content -->
+        <main class="main-content flex-grow-1">
+            {% block content %}{% endblock %}
+        </main>
+    
+        <!-- Footer -->
+        {% include 'includes/footer.html' %}
+    </div>
+    
+    <!-- Post-load JavaScript block for page-specific scripts -->
+    {% block postloadjs %}
+        <!-- Mailchimp CSS -->
+        <link href="//cdn-images.mailchimp.com/embedcode/classic-061523.css" rel="stylesheet" type="text/css">
+        
+        <!-- Mailchimp JavaScript -->
+        <script src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"></script>
+        
+        <!-- Custom script.js -->
+        <script src="{% static 'js/script.js' %}"></script>
+    {% endblock %}
+    
+    <!-- Toast Container -->
+        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="toast align-items-center text-bg-{{ message.tags }} border-0 mb-3" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                {{ message }}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
 
-</body>
+    </body>    
 </html>

@@ -4,6 +4,7 @@ from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
+from django.contrib import messages  # Import Django messages
 from .models import Order, OrderLineItem
 from products_v2.models import Product
 import json
@@ -35,6 +36,7 @@ def checkout(request):
         # Use persistent basket items for logged-in users
         basket_items = BasketItem.objects.filter(user=request.user)
         if not basket_items.exists():
+            messages.info(request, "Your basket is empty. Please add items before proceeding to checkout.")  # Message for empty basket
             return redirect('basket_v2:show_basket')  # Redirect if basket is empty
 
         for basket_item in basket_items:
@@ -240,6 +242,12 @@ def order_success(request, order_id):
     # Clear the session basket as a fallback
     if 'basket' in request.session:
         del request.session['basket']
+
+    # Add a success message
+    messages.success(
+        request,
+        "Your order was successful! Visit My Account to access your purchased plans."
+    )
 
     # Render the checkout success page with the order details
     return render(request, 'checkout_v2/checkout_success.html', {'order': order})
