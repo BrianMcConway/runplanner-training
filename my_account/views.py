@@ -41,8 +41,7 @@ def my_account(request):
     Landing Page / Dashboard:
     Provides an overview and quick links to profile and purchased plans.
     """
-    purchases = Purchase.objects.filter(user=request.user, payment_verified=True)
-    return render(request, 'my_account/my_account.html', {'purchases': purchases})
+    return render(request, 'my_account/my_account.html')
 
 
 @login_required

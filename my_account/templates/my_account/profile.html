@@ -10,43 +10,48 @@
 
 {% block content %}
     <div class="container mt-5">
-        <h2 class="mb-4">{% trans "My Profile" %}</h2>
-        
-        <div class="card mb-4">
-            <div class="card-body">
-                <h4 class="card-title">{% trans "Personal Details" %}</h4>
-                <p><strong>{% trans "Username:" %}</strong> {{ user.username }}</p>
-                <p><strong>{% trans "First Name:" %}</strong> {{ user.first_name }}</p>
-                <p><strong>{% trans "Last Name:" %}</strong> {{ user.last_name }}</p>
-                <p><strong>{% trans "Email:" %}</strong> {{ user.email }}</p>
-                <!-- Add more personal details if needed -->
-                <a href="{% url 'my_account:edit_profile' %}" class="btn btn-primary">{% trans "Edit Profile" %}</a>
-            </div>
-        </div>
-        
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">{% trans "Purchased Training Plans" %}</h4>
-                {% if purchases %}
-                    <ul class="list-group">
-                        {% for purchase in purchases %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    {% if purchase.training_plan.image %}
-                                        <img src="{{ purchase.training_plan.image.url }}" alt="Training Plan Image" width="50" height="50" class="me-3">
-                                    {% else %}
-                                        <img src="{% static 'images/placeholder.jpg' %}" alt="Placeholder Image" width="50" height="50" class="me-3">
-                                    {% endif %}
-                                    <strong>{{ purchase.training_plan.title|replace_underscore }}</strong>
-                                </div>
-                                <span class="badge bg-secondary">{{ purchase.purchase_date|date:"F j, Y" }}</span>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>{% trans "You have not purchased any training plans yet." %}</p>
-                {% endif %}
-                <a href="{% url 'my_account:purchased_plans' %}" class="btn btn-success mt-3">{% trans "View All Purchased Plans" %}</a>
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <h2 class="text-center mb-5">{% trans "My Profile" %}</h2>
+
+                <!-- Personal Details Card -->
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body text-center">
+                        <h4 class="card-title mb-4">{% trans "Personal Details" %}</h4>
+                        <p><strong>{% trans "Username:" %}</strong> {{ user.username }}</p>
+                        <p><strong>{% trans "First Name:" %}</strong> {{ user.first_name }}</p>
+                        <p><strong>{% trans "Last Name:" %}</strong> {{ user.last_name }}</p>
+                        <p><strong>{% trans "Email:" %}</strong> {{ user.email }}</p>
+                        <a href="{% url 'my_account:edit_profile' %}" class="btn btn-primary btn-sm mt-3 w-50">{% trans "Edit Profile" %}</a>
+                    </div>
+                </div>
+
+                <!-- Purchased Training Plans Card -->
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h4 class="card-title mb-4">{% trans "Purchased Training Plans" %}</h4>
+                        {% if purchases %}
+                            <ul class="list-group">
+                                {% for purchase in purchases %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            {% if purchase.training_plan.image %}
+                                                <img src="{{ purchase.training_plan.image.url }}" alt="Training Plan Image" width="50" height="50" class="me-3">
+                                            {% else %}
+                                                <img src="{% static 'images/placeholder.jpg' %}" alt="Placeholder Image" width="50" height="50" class="me-3">
+                                            {% endif %}
+                                            <strong>{{ purchase.training_plan.title|replace_underscore }}</strong>
+                                        </div>
+                                        <span class="badge bg-secondary">{{ purchase.purchase_date|date:"F j, Y" }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-muted">{% trans "You have not purchased any training plans yet." %}</p>
+                        {% endif %}
+                        <a href="{% url 'my_account:purchased_plans' %}" class="btn btn-success btn-sm mt-4 w-50">{% trans "View All Purchased Plans" %}</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

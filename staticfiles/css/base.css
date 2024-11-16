@@ -104,18 +104,7 @@ footer a:hover {
     text-decoration: none;
 }
 
-/* Newsletter Subscription Styling */
-footer .input-group {
-    display: flex;
-}
 
-/* Newsletter Subscription Styling */
-footer .input-group .form-control {
-    border-radius: 5px 0 0 5px; /* Rounded left corners only */
-    border: none;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-}
 
 footer .input-group .btn-warning {
     background-color: #ffc107;
@@ -136,6 +125,87 @@ footer .input-group .btn-warning:hover {
 /* Footer Icons Spacing */
 .footer-icons a {
     margin-right: 15px;
+}
+
+/* General Mailchimp Form Styling */
+#mc_embed_signup {
+    background: transparent !important; /* Match the footer's background */
+    clear: left !important;
+    font-family: Helvetica, Arial, sans-serif !important;
+    font-size: 14px !important;
+    width: 100% !important;
+    padding: 0 !important; /* Remove extra padding */
+    text-align: left; /* Align the text to the left */
+    color: #fff; /* Match the footer text color */
+}
+
+#mc_embed_signup h2 {
+    color: #ffc107; /* Match the footer heading color */
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.mc-field-group {
+    margin-bottom: 15px;
+}
+
+#mc_embed_signup input[type="email"] {
+    background-color: #333 !important; /* Match the footer color scheme */
+    color: #fff !important;
+    border: 1px solid #555 !important;
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%; /* Full width for input */
+    box-sizing: border-box;
+}
+
+#mc_embed_signup input[type="email"]::placeholder {
+    color: #aaa;
+}
+
+#mc_embed_signup .button {
+    background-color: #ffc107 !important; /* Match the footer's accent color */
+    color: #000 !important; /* Dark text for contrast */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    width: 100%; /* Full width button on smaller screens */
+    transition: all 0.3s ease;
+}
+
+#mc_embed_signup .button:hover {
+    background-color: #e6a900 !important; /* Slightly darker hover color */
+    color: #fff !important;
+}
+
+/* Remove "indicates required" text */
+.indicates-required {
+    display: none;
+}
+
+/* Adjust response messages */
+.response {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #00c853; /* Success message in green */
+}
+
+#mc_embed_signup .asterisk {
+    color: #ffc107; /* Match the footer accent color */
+}
+
+/* Make the form responsive */
+@media (max-width: 768px) {
+    #mc_embed_signup .button {
+        width: 100%; /* Full width button on smaller screens */
+    }
+    #mc_embed_signup input[type="email"] {
+        width: 100%; /* Full width input field on smaller screens */
+    }
 }
 
 
@@ -521,4 +591,42 @@ body.homepage footer {
         width: 100%; /* Full width for small screens */
         margin-top: 1rem;
     }
+}
+
+/* =====================================================
+   Message Block Styles
+   ===================================================== */
+
+.message-container .alert {
+    margin-top: 15px;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Optional for visibility */
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
 }
