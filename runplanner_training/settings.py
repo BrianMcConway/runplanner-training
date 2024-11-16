@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'blog',
     'crispy_forms',
     'crispy_bootstrap5',
+    'markdownx',
 ]
 
 MIDDLEWARE = [
@@ -181,3 +182,13 @@ if not DEBUG:
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'blog:post_list'
 LOGOUT_REDIRECT_URL = 'blog:post_list'
+
+MARKDOWNX_MARKDOWN_EXTENSIONS = [
+    'markdown.extensions.extra',
+    'markdown.extensions.codehilite',
+]
+
+MARKDOWNX_MEDIA_PATH = 'markdownx/'
+
+# Bleach settings
+MARKDOWNX_SANITIZE_FUNCTION = 'blog.utils.sanitize_markdown'

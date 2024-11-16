@@ -1,13 +1,17 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <h1>{{ post.title }}</h1>
 <p><small>Published on {{ post.created_at|date:"F j, Y, g:i a" }} by {{ post.author.username }}</small></p>
-<p>{{ post.content }}</p>
+
+<div>
+    {{ post.content|linebreaks }}
+</div>
 
 {% if user.is_staff %}
-    <a href="{% url 'blog:post_edit' post.pk %}">Edit Post</a> |
-    <a href="{% url 'blog:post_delete' post.pk %}">Delete Post</a>
+    <a href="{% url 'blog:post_edit' slug=post.slug %}" class="btn btn-primary">Edit Post</a>
+    <a href="{% url 'blog:post_delete' slug=post.slug %}" class="btn btn-danger">Delete Post</a>
 {% endif %}
 
 <hr>
@@ -16,10 +20,10 @@
 {% for comment in comments %}
     <div class="comment">
         <p><strong>{{ comment.commenter.username }}</strong> commented on {{ comment.created_at|date:"F j, Y, g:i a" }}:</p>
-        <p>{{ comment.content }}</p>
+        <p>{{ comment.content|linebreaks }}</p>
         {% if comment.commenter == user %}
-            <a href="{% url 'blog:comment_edit' comment.pk %}">Edit</a> |
-            <a href="{% url 'blog:comment_delete' comment.pk %}">Delete</a>
+            <a href="{% url 'blog:comment_edit' pk=comment.pk %}" class="btn btn-sm btn-primary">Edit</a>
+            <a href="{% url 'blog:comment_delete' pk=comment.pk %}" class="btn btn-sm btn-danger">Delete</a>
         {% endif %}
         <hr>
     </div>
@@ -31,7 +35,7 @@
     <h3>Add a Comment</h3>
     <form method="post">
         {% csrf_token %}
-        {{ comment_form }}
+        {{ comment_form.as_p }}
         <button type="submit" class="btn btn-primary">Post Comment</button>
     </form>
 {% else %}

@@ -70,11 +70,17 @@ def post_edit(request, slug):
 
 @user_passes_test(is_admin)
 def post_delete(request, slug):
-    """View for deleting a post (admin only)."""
+    """View for confirming and deleting a post (admin only)."""
     post = get_object_or_404(Post, slug=slug)
-    post.delete()
-    messages.success(request, 'Post deleted successfully.')
-    return redirect('blog:post_list')
+
+    if request.method == 'POST':
+        # Delete the post
+        post.delete()
+        messages.success(request, 'Post deleted successfully.')
+        return redirect('blog:post_list')
+
+    # If GET request, render confirmation page
+    return render(request, 'blog/post_confirm_delete.html', {'post': post})
 
 @login_required
 def comment_edit(request, pk):
@@ -89,9 +95,14 @@ def comment_edit(request, pk):
 
 @login_required
 def comment_delete(request, pk):
-    """View for deleting a comment (comment owner only)."""
+    """View for confirming and deleting a comment (comment owner only)."""
     comment = get_object_or_404(Comment, pk=pk, commenter=request.user)
-    post_slug = comment.post.slug
-    comment.delete()
-    messages.success(request, 'Comment deleted successfully.')
-    return redirect('blog:post_detail', slug=post_slug)
+
+    if request.method == 'POST':
+        post_slug = comment.post.slug
+        comment.delete()
+        messages.success(request, 'Comment deleted successfully.')
+        return redirect('blog:post_detail', slug=post_slug)
+
+    # If GET request, render confirmation page
+    return render(request, 'blog/comment_confirm_delete.html', {'comment': comment})

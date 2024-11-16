@@ -9,5 +9,5 @@
     <button type="submit" class="btn btn-success">Update Comment</button>
 </form>
 
-<a href="{% url 'blog:post_detail' pk=form.instance.post.pk %}">Back to Post</a>
+<a href="{% url 'blog:post_detail' slug=form.instance.post.slug %}">Back to Post</a>
 {% endblock %}

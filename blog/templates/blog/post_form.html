@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <h1>{% if form.instance.pk %}Edit{% else %}Create{% endif %} Post</h1>
@@ -6,7 +7,9 @@
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn btn-success">{% if form.instance.pk %}Update{% else %}Create{% endif %} Post</button>
+    <button type="submit" class="btn btn-success">
+        {% if form.instance.pk %}Update{% else %}Create{% endif %} Post
+    </button>
 </form>
 
 <a href="{% url 'blog:post_list' %}">Back to Posts</a>

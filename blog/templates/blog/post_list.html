@@ -18,7 +18,9 @@
         <p>
             <small>Published on {{ post.created_at|date:"F j, Y, g:i a" }} by {{ post.author.username }}</small>
         </p>
-        <p>{{ post.content|truncatewords:30 }}</p>
+        <p>
+            {{ post.get_content_as_markdown|safe|truncatechars_html:200 }}
+        </p>
         {% if user.is_staff %}
             <a href="{% url 'blog:post_edit' slug=post.slug %}">Edit</a> |
             <a href="{% url 'blog:post_delete' slug=post.slug %}">Delete</a>

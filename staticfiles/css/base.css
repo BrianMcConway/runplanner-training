@@ -2,6 +2,11 @@
    Global Styles
    ===================================================== */
 
+/* Apply border-box globally for consistency */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 /* Ensure the html and body take full height and have no margin */
 html, body {
     height: 100%;
@@ -24,6 +29,57 @@ body {
 }
 
 /* =====================================================
+   Fullscreen Header
+   ===================================================== */
+
+/* Adjust header alignment */
+#topnav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px; /* Adds padding to bring content closer to the edge */
+}
+
+/* Logo alignment */
+#topnav h2 {
+    margin: 0;
+    padding-left: 20px; /* Keeps the logo slightly to the left */
+    text-align: left;
+}
+
+/* Icons alignment */
+#topnav .list-inline {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-right: 50px; /* Move the icons closer to the center */
+}
+
+/* Account and basket alignment */
+#topnav #account-icon,
+#topnav #basket-icon {
+    margin-left: 15px; /* Add some spacing between the two icons */
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 992px) {
+    #topnav {
+        flex-direction: column;
+        padding: 0;
+    }
+    #topnav h2 {
+        text-align: center;
+        padding-left: 0;
+    }
+    #topnav .list-inline {
+        justify-content: center;
+        margin-top: 10px;
+        margin-right: 0; /* Reset margin for smaller screens */
+    }
+}
+
+
+/* =====================================================
    Footer Styles
    ===================================================== */
 
@@ -34,8 +90,6 @@ footer {
     padding-top: 20px;
     padding-bottom: 20px;
     position: relative;
-    margin-top: auto;
-    bottom: 0;
     width: 100%;
 }
 
@@ -46,19 +100,33 @@ footer a {
 }
 
 footer a:hover {
-    color: #ffc107; /* Bootstrap warning color (gold/yellow) */
+    color: #ffc107;
     text-decoration: none;
 }
 
-/* Warning Text in Footer */
-footer .text-warning {
-    color: #ffc107 !important;
+/* Newsletter Subscription Styling */
+footer .input-group {
+    display: flex;
 }
 
-/* Warning Buttons in Footer */
+/* Newsletter Subscription Styling */
+footer .input-group .form-control {
+    border-radius: 5px 0 0 5px; /* Rounded left corners only */
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+}
+
 footer .input-group .btn-warning {
     background-color: #ffc107;
     border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    border-radius: 0 5px 5px 0; /* Rounded right corners only */
 }
 
 footer .input-group .btn-warning:hover {
@@ -69,6 +137,7 @@ footer .input-group .btn-warning:hover {
 .footer-icons a {
     margin-right: 15px;
 }
+
 
 /* =====================================================
    Homepage Background Styles
@@ -281,7 +350,7 @@ body.homepage {
     background-size: cover;
     
     /* Optional: Add a fallback background color */
-    background-color: #000;
+    background-color: #f0f0f0;
     
     /* Ensure the body takes the full height */
     min-height: 100vh;
@@ -307,4 +376,149 @@ body.homepage .main-content .container {
 /* Push footer to the bottom on the homepage */
 body.homepage footer {
     margin-top: auto;
+}
+
+/* =====================================================
+   Basket Styles
+   ===================================================== */
+
+/* Add a container-specific style for the basket item */
+.basket-item-container {
+    background-color: #ffffff; /* White background for contrast */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for a lifted effect */
+}
+
+/* Style individual item information for better separation */
+.basket-item-container p {
+    margin: 0;
+    padding: 8px 0;
+    border-bottom: 1px solid #e0e0e0; /* Light grey border for separation */
+}
+
+/* Remove border from the last item */
+.basket-item-container p:last-child {
+    border-bottom: none;
+}
+
+/* Optional styling to align text */
+.basket-item-container .item-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.basket-item-container .item-price,
+.basket-item-container .item-quantity,
+.basket-item-container .item-total {
+    color: #333;
+    font-size: 0.9rem;
+}
+
+/* =====================================================
+   Responsive Styles for Basket Table
+   ===================================================== */
+
+/* Compact and Responsive Styles for Basket Table */
+@media (max-width: 576px) {
+    /* Narrow styling for the basket table */
+    .basket-table {
+        width: 100%;
+        max-width: 100%;
+        font-size: 0.7rem; /* Slightly smaller font for compact look */
+    }
+
+    .basket-table th,
+    .basket-table td {
+        padding: 0.2rem 0.3rem; /* Reduced padding for compact appearance */
+        font-size: 0.7rem; /* Smaller font size */
+    }
+
+    /* Control column widths directly */
+    .basket-table th:nth-child(1),
+    .basket-table td:nth-child(1) {
+        width: 35%; /* Item name */
+    }
+
+    .basket-table th:nth-child(2),
+    .basket-table td:nth-child(2),
+    .basket-table th:nth-child(3),
+    .basket-table td:nth-child(3),
+    .basket-table th:nth-child(4),
+    .basket-table td:nth-child(4) {
+        width: 12-13%; /* Price, Quantity, and Total */
+    }
+
+    .basket-table th:nth-child(5),
+    .basket-table td:nth-child(5) {
+        width: 18%; /* Action button */
+        text-align: center; /* Center-align action button */
+    }
+
+    /* Compact action buttons */
+    .basket-table .btn {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.3rem;
+        width: 100%; /* Full-width for mobile view */
+    }
+
+    /* Adjust total and action buttons below the table */
+    .text-center h3 {
+        font-size: 0.9rem; /* Smaller font size for total */
+    }
+
+    .text-center .btn {
+        width: 100%; /* Full width for action buttons on mobile */
+        max-width: 180px; /* Limit width for buttons */
+        font-size: 0.8rem; /* Slightly smaller font size for buttons */
+        margin-top: 0.2rem; /* Space between buttons */
+    }
+}
+
+/* Extra adjustments for very small screens (e.g., 400px and below) */
+@media (max-width: 400px) {
+    .basket-table th,
+    .basket-table td {
+        font-size: 0.65rem; /* Smaller font for very narrow screens */
+        padding: 0.15rem;
+    }
+
+    .text-center .btn {
+        padding: 0.2rem;
+        font-size: 0.7rem;
+    }
+}
+
+
+/* =====================================================
+   Plan View Pages Styles
+   ===================================================== */
+
+@media (max-width: 576px) {
+    /* Adjust table text and padding on extra-small screens */
+    .table th, .table td {
+        font-size: 0.85rem; /* Smaller font size */
+        padding: 0.5rem; /* Less padding */
+    }
+
+    .plan-name, .purchase-date, .status, .actions {
+        font-size: 0.8rem;
+    }
+
+    /* Make buttons take up full width in table cells */
+    .table .btn {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.6rem;
+        width: 100%;
+    }
+
+    /* Adjust heading and button for better spacing */
+    h2.text-center {
+        font-size: 1.5rem;
+    }
+
+    .btn-success {
+        width: 100%; /* Full width for small screens */
+        margin-top: 1rem;
+    }
 }

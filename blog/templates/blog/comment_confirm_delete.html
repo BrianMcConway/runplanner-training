@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Confirm Delete Comment</h1>
+    <p>Are you sure you want to delete your comment?</p>
+    <blockquote class="blockquote">
+        {{ comment.content|linebreaks }}
+    </blockquote>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+        <a href="{% url 'blog:post_detail' slug=comment.post.slug %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

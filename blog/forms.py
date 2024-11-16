@@ -5,7 +5,7 @@ class PostForm(forms.ModelForm):
     """Form for creating and editing posts."""
     class Meta:
         model = Post
-        fields = ['title', 'content']
+        fields = ['title', 'content']  # Do not include 'slug'
 
 class CommentForm(forms.ModelForm):
     """Form for adding comments."""
