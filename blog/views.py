@@ -3,6 +3,7 @@ from .models import Post, Comment
 from .forms import PostForm, CommentForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
+from django.conf import settings
 
 def is_admin(user):
     return user.is_staff
@@ -20,8 +21,8 @@ def post_detail(request, slug):
 
     # Handle comment submission
     if request.method == 'POST':
+        comment_form = CommentForm(request.POST)
         if request.user.is_authenticated:
-            comment_form = CommentForm(request.POST)
             if comment_form.is_valid():
                 new_comment = comment_form.save(commit=False)
                 new_comment.post = post
@@ -31,7 +32,9 @@ def post_detail(request, slug):
                 return redirect('blog:post_detail', slug=post.slug)
         else:
             messages.error(request, 'You need to be logged in to comment.')
-            return redirect('login')
+            # Redirect to login with `next` parameter
+            login_url = f"{settings.LOGIN_URL}?next={request.path}"
+            return redirect(login_url)
     else:
         comment_form = CommentForm()
 
@@ -39,7 +42,7 @@ def post_detail(request, slug):
         'post': post,
         'comments': comments,
         'new_comment': new_comment,
-        'comment_form': comment_form
+        'comment_form': comment_form,
     })
 
 @user_passes_test(is_admin)

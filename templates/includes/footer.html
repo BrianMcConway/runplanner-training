@@ -20,10 +20,13 @@
                     <a href="{% url 'products_v2:training_plans' %}" class="text-white">Training Plans</a>
                 </p>
                 <p>
-                    <a href="#" class="text-white">About Us</a>
+                    <a href="{% url 'blog:post_list' %}" class="text-white">Blog</a>
                 </p>
                 <p>
-                    <a href="#" class="text-white">Contact</a>
+                    <a href="{% url 'pages:about' %}" class="text-white">About</a>
+                </p>
+                <p>
+                    <a href="{% url 'contact:contact' %}" class="text-white">Contact</a>
                 </p>
             </div>
 
@@ -54,21 +57,31 @@
             </div>
 
             <!-- Social Media Links -->
-            <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mt-3 footer-icons">
-                <h5 class="text-uppercase mb-4 font-weight-bold text-warning">Follow Us</h5>
-                <a href="#" class="text-white me-4" aria-label="Facebook">
-                    <i class="fab fa-facebook-f fa-lg"></i>
-                </a>
-                <a href="#" class="text-white me-4" aria-label="Twitter">
-                    <i class="fab fa-twitter fa-lg"></i>
-                </a>
-                <a href="#" class="text-white me-4" aria-label="Instagram">
-                    <i class="fab fa-instagram fa-lg"></i>
-                </a>
-                <a href="#" class="text-white me-4" aria-label="LinkedIn">
-                    <i class="fab fa-linkedin fa-lg"></i>
-                </a>
-            </div>
+<div class="col-md-3 col-lg-4 col-xl-3 mx-auto mt-3 footer-icons">
+    <h5 class="text-uppercase mb-4 font-weight-bold text-warning">Follow Us</h5>
+    <a href="https://www.facebook.com/profile.php?id=61568929409682" 
+       class="text-white me-4" 
+       aria-label="Facebook" 
+       target="_blank" 
+       rel="noopener noreferrer">
+        <i class="fab fa-facebook-f fa-lg"></i>
+    </a>
+    <a href="https://www.instagram.com/brianmcconway/" 
+       class="text-white me-4" 
+       aria-label="Instagram" 
+       target="_blank" 
+       rel="noopener noreferrer">
+        <i class="fab fa-instagram fa-lg"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/brianmcconway/" 
+       class="text-white me-4" 
+       aria-label="LinkedIn" 
+       target="_blank" 
+       rel="noopener noreferrer">
+        <i class="fab fa-linkedin fa-lg"></i>
+    </a>
+</div>
+
         </div>
 
         <hr class="mb-4">

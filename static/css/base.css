@@ -125,6 +125,20 @@ footer .input-group .btn-warning:hover {
 /* Footer Icons Spacing */
 .footer-icons a {
     margin-right: 15px;
+    text-decoration: none; /* Ensure no text decoration is applied */
+    display: inline-flex; /* Ensures alignment and prevents spacing issues */
+    align-items: center; /* Centers icons properly */
+}
+
+/* Remove any potential pseudo-elements */
+.footer-icons a::before,
+.footer-icons a::after {
+    content: none; /* Explicitly remove any pseudo-element content */
+}
+
+/* Hover Effects for Icons */
+.footer-icons a:hover i {
+    color: #ffc107; /* Adds the hover color change for icons */
 }
 
 /* General Mailchimp Form Styling */
@@ -629,4 +643,47 @@ body.homepage footer {
     background-color: #d1ecf1;
     color: #0c5460;
     border: 1px solid #bee5eb;
+}
+
+/* =====================================================
+   Blog Styles
+   ===================================================== */
+
+/* styles.css */
+
+/* Responsive Button Size */
+.btn-responsive-small {
+    /* Default styles for small screens */
+    width: 100%; /* Ensures full width on small screens */
+}
+
+/* Adjustments for medium and larger screens */
+@media (min-width: 768px) { /* Bootstrap's 'md' breakpoint */
+    .btn-responsive-small {
+        width: auto; /* Revert to auto width on larger screens */
+        padding: 0.25rem 0.5rem; /* Smaller padding */
+        font-size: 0.875rem; /* Smaller font size */
+        line-height: 1.5; /* Adjust line height if necessary */
+    }
+}
+
+form.needs-validation textarea {
+    resize: none; /* Disable resizing */
+}
+
+.custom-blue-btn {
+    background-color: #007bff; /* Bootstrap's primary blue */
+    color: white;
+    border: 1px solid #007bff;
+    border-radius: 0.25rem;
+    padding: 0.25rem 0.75rem; /* Adjust padding for a compact button */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.custom-blue-btn:hover {
+    background-color: #0056b3; /* Slightly darker blue for hover effect */
+    border-color: #0056b3;
+    color: white;
 }

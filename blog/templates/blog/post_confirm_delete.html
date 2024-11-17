@@ -1,14 +1,20 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5">
-    <h1 class="mb-4">Confirm Delete</h1>
-    <p>Are you sure you want to delete the post "<strong>{{ post.title }}</strong>"?</p>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 60vh;">
+    <div class="text-center">
+        <h1 class="mb-4">Confirm Delete</h1>
+        <p>Are you sure you want to delete the post "<strong>{{ post.title }}</strong>"?</p>
 
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Yes, Delete</button>
-        <a href="{% url 'blog:post_detail' slug=post.slug %}" class="btn btn-secondary">Cancel</a>
-    </form>
+        <form method="post" class="mt-4 d-flex justify-content-center gap-2">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger px-4 py-2">
+                <i class="fas fa-trash-alt"></i> Yes, Delete
+            </button>
+            <a href="{% url 'blog:post_detail' slug=post.slug %}" class="btn btn-secondary px-4 py-2">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </form>
+    </div>
 </div>
 {% endblock %}

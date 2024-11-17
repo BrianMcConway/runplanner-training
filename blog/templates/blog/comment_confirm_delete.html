@@ -1,17 +1,26 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="container mt-5">
-    <h1 class="mb-4">Confirm Delete Comment</h1>
-    <p>Are you sure you want to delete your comment?</p>
-    <blockquote class="blockquote">
-        {{ comment.content|linebreaks }}
-    </blockquote>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 60vh;">
+    <div class="text-center w-100" style="max-width: 500px;">
+        <h1 class="mb-3">Confirm Delete Comment</h1>
+        <p class="mb-4">Are you sure you want to delete your comment?</p>
+        
+        <blockquote class="blockquote mb-4">
+            <p class="mb-0">{{ comment.content|linebreaks }}</p>
+        </blockquote>
 
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Yes, Delete</button>
-        <a href="{% url 'blog:post_detail' slug=comment.post.slug %}" class="btn btn-secondary">Cancel</a>
-    </form>
+        <!-- Centered Form -->
+        <form method="post" class="d-flex flex-column align-items-center gap-3">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger px-4 py-2 w-100 w-sm-auto">
+                <i class="fas fa-trash-alt"></i> Yes, Delete
+            </button>
+            <a href="{% url 'blog:post_detail' slug=comment.post.slug %}" class="btn btn-secondary px-4 py-2 w-100 w-sm-auto">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </form>
+    </div>
 </div>
 {% endblock %}
