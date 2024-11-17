@@ -141,6 +141,13 @@ footer .input-group .btn-warning:hover {
     color: #ffc107; /* Adds the hover color change for icons */
 }
 
+/* Disable hover effects for touchscreen devices */
+@media (hover: none) {
+    .footer-icons a:hover i {
+        color: inherit; /* Revert to the original color */
+    }
+}
+
 /* General Mailchimp Form Styling */
 #mc_embed_signup {
     background: transparent !important; /* Match the footer's background */
