@@ -10,7 +10,7 @@
 <div class="container py-5 text-center">
     <h2 class="mb-4">{% trans "Confirm Email Address" %}</h2>
     
-    <p>
+    <p class="mb-4">
         {% blocktrans %}
         Please confirm that {{ email }} is an email address for user {{ user_display }}.
         {% endblocktrans %}
@@ -18,7 +18,7 @@
 
     <form method="post" class="d-inline">
         {% csrf_token %}
-        <button type="submit" class="btn btn-primary px-4">
+        <button type="submit" class="btn btn-success px-4">
             <i class="fas fa-check-circle me-2"></i>{% trans "Confirm" %}
         </button>
     </form>
