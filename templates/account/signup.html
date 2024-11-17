@@ -7,28 +7,31 @@
 {% endblock head_title %}
 
 {% block inner_content %}
-    <div class="container mt-5">
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="text-center w-100" style="max-width: 400px;">
         <h2 class="mb-4">{% trans "Register" %}</h2>
-        
+
         {% if next %}
             <div class="alert alert-info" role="alert">
                 {% trans "To continue with your purchase, please register for an account." %}
             </div>
         {% endif %}
-        
-        <form method="post" action="{% url 'account_signup' %}">
+
+        <form method="post" action="{% url 'account_signup' %}" class="text-start">
             {% csrf_token %}
             {{ form|crispy }}
             <input type="hidden" name="next" value="{{ next }}">
-            <button type="submit" class="btn btn-success">Register</button>
+            <button type="submit" class="btn btn-success w-100 d-flex align-items-center justify-content-center">
+                <i class="fas fa-user-plus me-2"></i> {% trans "Register" %}
+            </button>
         </form>
-        
+
         <p class="mt-3">
             {% trans "Already have an account?" %}
             <a href="{% url 'account_login' %}?next={{ next }}">
                 {% trans "Log in here" %}
             </a>.
         </p>
-        
     </div>
+</div>
 {% endblock inner_content %}

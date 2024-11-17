@@ -12,7 +12,7 @@ urlpatterns = [
     path('checkout_v2/', include('checkout_v2.urls', namespace='checkout_v2')),
     path('contact/', include('contact.urls')),
     path('my_account/', include('my_account.urls')),
-    path('', include('pages.urls')),
+    path('pages/', include('pages.urls')),
     path('blog/', include('blog.urls', namespace='blog')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('markdownx/', include('markdownx.urls')),
