@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Return Policy</h1>
+    <p>Last updated: 17/11/24</p>
+    <hr>
+    <h3>Non-Returnable Items</h3>
+    <p>The following items are not eligible for return:</p>
+    <ul>
+        <li>Digital products/downloads.</li>
+    </ul>
+    <h3>Contact Us</h3>
+    <p>
+        Contact us through our <a href="{% url 'contact:contact' %}">Contact Form</a> 
+        with any questions or concerns.
+    </p>
+</div>
+{% endblock %}

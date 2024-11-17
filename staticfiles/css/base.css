@@ -78,7 +78,6 @@ body {
     }
 }
 
-
 /* =====================================================
    Footer Styles
    ===================================================== */
@@ -139,6 +138,13 @@ footer .input-group .btn-warning:hover {
 /* Hover Effects for Icons */
 .footer-icons a:hover i {
     color: #ffc107; /* Adds the hover color change for icons */
+}
+
+/* Disable hover effects for touchscreen devices */
+@media (hover: none) {
+    .footer-icons a:hover i {
+        color: inherit; /* Revert to the original color */
+    }
 }
 
 /* General Mailchimp Form Styling */

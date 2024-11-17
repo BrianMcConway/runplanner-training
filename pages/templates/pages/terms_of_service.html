@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Terms of Service</h1>
+    <p>Last updated: 17/11/24</p>
+    <hr>
+    <h3>Welcome to RunPlanner Training</h3>
+    <p>
+        By accessing or using our website, you agree to these Terms of Service. Please read them carefully.
+    </p>
+    <h3>Use of the Website</h3>
+    <ul>
+        <li>You agree to use this website for lawful purposes only.</li>
+        <li>We reserve the right to terminate access for violations of our policies.</li>
+    </ul>
+    <h3>Products and Services</h3>
+    <p>
+        We strive to provide accurate product descriptions and availability. However:
+        <ul>
+            <li>We reserve the right to modify or discontinue products.</li>
+            <li>Pricing and promotions are subject to change without notice.</li>
+        </ul>
+    </p>
+    <h3>Returns and Refunds</h3>
+    <p>Please review our <a href="{% url 'pages:return_policy' %}">Return Policy</a> for details.</p>
+    <h3>Limitation of Liability</h3>
+    <p>
+        We are not liable for any indirect, incidental, or consequential damages arising from your use of this site.
+    </p>
+    <h3>Changes to Terms</h3>
+    <p>We reserve the right to update these terms at any time. Check this page periodically for updates.</p>
+</div>
+{% endblock %}
