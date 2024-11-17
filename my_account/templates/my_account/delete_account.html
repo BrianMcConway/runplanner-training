@@ -8,15 +8,24 @@
 {% endblock head_title %}
 
 {% block content %}
-    <div class="container mt-5">
-        <h2 class="mb-4 text-danger">{% trans "Delete Your Account" %}</h2>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 50vh;">
+    <div class="w-100 text-center" style="max-width: 400px;">
+        <!-- Page Title -->
+        <h2 class="mb-3 text-danger">{% trans "Delete Your Account" %}</h2>
         
-        <p>{% trans "Are you sure you want to delete your account? This action is irreversible." %}</p>
+        <!-- Confirmation Text -->
+        <p class="mb-3">{% trans "Are you sure you want to delete your account? This action is irreversible." %}</p>
         
-        <form method="post">
+        <!-- Form Buttons -->
+        <form method="post" class="d-flex justify-content-center gap-2">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger">{% trans "Confirm Deletion" %}</button>
-            <a href="{% url 'my_account:profile' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+            <button type="submit" class="btn btn-danger px-3 py-2">
+                <i class="fas fa-trash-alt"></i> {% trans "Confirm Deletion" %}
+            </button>
+            <a href="{% url 'my_account:profile' %}" class="btn btn-secondary px-3 py-2">
+                <i class="fas fa-times"></i> {% trans "Cancel" %}
+            </a>
         </form>
     </div>
+</div>
 {% endblock content %}

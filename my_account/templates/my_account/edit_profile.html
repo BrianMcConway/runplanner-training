@@ -8,21 +8,31 @@
 {% endblock head_title %}
 
 {% block content %}
-    <div class="container mt-5">
-        <h2 class="mb-4">{% trans "Edit Your Profile" %}</h2>
-        
-        <form method="post">
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="w-100" style="max-width: 400px;">
+        <!-- Page Title -->
+        <h2 class="mb-4 text-center">{% trans "Edit Your Profile" %}</h2>
+
+        <!-- Profile Edit Form -->
+        <form method="post" class="w-100">
             {% csrf_token %}
             {{ form|crispy }}
-            <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
+            <div class="d-flex justify-content-center mt-3">
+                <button type="submit" class="btn btn-primary px-4 py-2">
+                    <i class="fas fa-save"></i> {% trans "Save Changes" %}
+                </button>
+            </div>
         </form>
-        
+
         <!-- Delete Account Section -->
-        <div class="mt-4">
+        <div class="mt-5 text-center">
             <hr>
             <h4 class="text-danger">{% trans "Delete Account" %}</h4>
-            <p>{% trans "Permanently delete your account. This action cannot be undone." %}</p>
-            <a href="{% url 'my_account:delete_account' %}" class="btn btn-danger">{% trans "Delete My Account" %}</a>
+            <p class="mb-3">{% trans "Permanently delete your account. This action cannot be undone." %}</p>
+            <a href="{% url 'my_account:delete_account' %}" class="btn btn-danger px-4 py-2">
+                <i class="fas fa-trash-alt"></i> {% trans "Delete My Account" %}
+            </a>
         </div>
     </div>
+</div>
 {% endblock content %}
