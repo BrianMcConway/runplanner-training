@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /admin/      # Block the admin page
+Disallow: /checkout/   # Block checkout
+Disallow: /basket/     # Block basket
+Sitemap: https://runplanner-training-cfec4c16a60a.herokuapp.com/sitemap.xml
