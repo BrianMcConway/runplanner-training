@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security settings
 SECRET_KEY = os.environ.get('SECRET_KEY')
-DEBUG = False  # Set to False in production
+DEBUG = True # Set to False in production
 
 # Allowed Hosts
 ALLOWED_HOSTS = [
