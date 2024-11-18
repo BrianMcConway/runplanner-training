@@ -24,6 +24,7 @@ urlpatterns = [
     path('contact/', include('contact.urls')),
     path('my_account/', include('my_account.urls')),
     path('pages/', include('pages.urls')),
+    path('blog/', include('blog.urls', namespace='blog')),
 
     # Robots.txt and Sitemap
     path('robots.txt', robots_txt, name='robots_txt'),
