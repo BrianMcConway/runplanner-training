@@ -3,7 +3,10 @@ from django.utils.text import slugify
 from products_v2.models import Product
 
 # Define the possible options for each field
-distance_options = ['5k', '10k', 'half_marathon', 'marathon', '50k', '80k', '100k', '160k', '200k']
+distance_options = [
+    '5k', '10k', 'half_marathon', 'marathon', '50k', '80k',
+    '100k', '160k', '200k'
+]
 difficulty_options = ['beginner', 'intermediate', 'advanced']
 terrain_options = ['road', 'trail', 'mixed']
 elevation_options = [
@@ -14,6 +17,8 @@ elevation_options = [
 ]
 
 # Helper function to calculate the price based on distance and difficulty
+
+
 def calculate_price(distance, difficulty):
     base_price = 15
     difficulty_increment = 3
@@ -38,14 +43,20 @@ def calculate_price(distance, difficulty):
 
     return price
 
-# Iterate through all combinations of distance, difficulty, terrain, and elevation
+# Iterate through all combinations of distance,
+    difficulty, terrain, elevation
+
+
 def generate_training_plans():
     for distance in distance_options:
         for difficulty in difficulty_options:
             for terrain in terrain_options:
                 for elevation in elevation_options:
                     # Generate the name for the plan
-                    name = f"{distance.capitalize()} {difficulty.capitalize()} ({terrain.capitalize()} {elevation})"
+                    name = (
+                        f"{distance.capitalize()} {difficulty.capitalize()} "
+                        f"({terrain.capitalize()} {elevation})"
+                    )
 
                     # Calculate price using the helper function
                     price = calculate_price(distance, difficulty)
@@ -73,6 +84,7 @@ def generate_training_plans():
                             slug=slug
                         )
                         training_plan.save()
+
 
 # Run the script
 generate_training_plans()

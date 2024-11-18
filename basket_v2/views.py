@@ -3,13 +3,21 @@ from django.contrib import messages
 from products_v2.models import Product
 from .models import BasketItem
 
+
 class Basket:
+    """
+    A class to manage basket operations for both authenticated
+    and unauthenticated users.
+    """
     def __init__(self, request):
         self.session = request.session
         self.user = request.user
         self.basket = self.session.get('basket', {})
 
     def add(self, product, quantity=1):
+        """
+        Add a product to the basket or update its quantity.
+        """
         product_slug = str(product.slug)
 
         if self.user.is_authenticated:
@@ -34,24 +42,31 @@ class Basket:
             self.save()
 
     def save(self):
-        """Mark the session as modified to ensure data is saved."""
+        """
+        Mark the session as modified to ensure data is saved.
+        """
         self.session['basket'] = self.basket
         self.session.modified = True
 
     def remove(self, product_slug):
+        """
+        Remove a product from the basket.
+        """
         if self.user.is_authenticated:
-            # Remove from the database if the user is authenticated
-            BasketItem.objects.filter(user=self.user, product__slug=product_slug).delete()
+            BasketItem.objects.filter(
+                user=self.user, product__slug=product_slug
+            ).delete()
         else:
-            # Remove from session if not authenticated
             if product_slug in self.basket:
                 del self.basket[product_slug]
                 self.save()
 
     def get_items(self):
+        """
+        Retrieve all items in the basket.
+        """
         items = []
         if self.user.is_authenticated:
-            # Load items from the database for authenticated users
             user_items = BasketItem.objects.filter(user=self.user)
             for item in user_items:
                 items.append({
@@ -61,61 +76,72 @@ class Basket:
                     'slug': item.product.slug,
                 })
         else:
-            # Load items from the session for unauthenticated users
             items = self.basket.values()
         return items
 
     def get_total_price(self):
-        total = 0
+        """
+        Calculate the total price of all items in the basket.
+        """
         if self.user.is_authenticated:
-            # Calculate total for authenticated users
-            total = sum(item.product.price * item.quantity for item in BasketItem.objects.filter(user=self.user))
-        else:
-            # Calculate total for session items
-            total = sum(float(item['price']) * item['quantity'] for item in self.basket.values())
-        return total
+            return sum(
+                item.product.price * item.quantity
+                for item in BasketItem.objects.filter(user=self.user)
+            )
+        return sum(
+            float(item['price']) * item['quantity']
+            for item in self.basket.values()
+        )
 
     def clear(self):
+        """
+        Clear all items from the basket.
+        """
         if self.user.is_authenticated:
-            # Clear database basket items for authenticated users
             BasketItem.objects.filter(user=self.user).delete()
         else:
-            # Clear session basket for unauthenticated users
             self.session['basket'] = {}
             self.save()
 
 
 def add_to_basket(request, slug):
-    """View to add a product to the basket."""
+    """
+    View to add a product to the basket.
+    """
     product = get_object_or_404(Product, slug=slug)
     basket = Basket(request)
     basket.add(product)
 
-    # Add a success message for adding an item
-    messages.success(request, f"'{product.name}' has been added to your basket!")
+    messages.success(
+        request,
+        f"'{product.name}' has been added to your basket!"
+    )
     return redirect('basket_v2:show_basket')
 
 
 def remove_from_basket(request, slug):
-    """View to remove a product from the basket."""
+    """
+    View to remove a product from the basket.
+    """
     product = get_object_or_404(Product, slug=slug)
     basket = Basket(request)
     basket.remove(slug)
 
-    # Add a warning message for removing an item
-    messages.warning(request, f"'{product.name}' has been removed from your basket.")
+    messages.warning(
+        request,
+        f"'{product.name}' has been removed from your basket."
+    )
     return redirect('basket_v2:show_basket')
 
 
 def show_basket(request):
-    """View to display all items in the basket."""
+    """
+    View to display all items in the basket.
+    """
     basket = Basket(request)
     items = basket.get_items()
-
-    # Calculate total price for all items in the basket
     total_price = basket.get_total_price()
 
-    # If the basket is empty, add an informational message
     if not items:
         messages.info(request, "Your basket is currently empty.")
 
@@ -126,10 +152,11 @@ def show_basket(request):
 
 
 def clear_basket(request):
-    """View to clear the entire basket."""
+    """
+    View to clear the entire basket.
+    """
     basket = Basket(request)
     basket.clear()
 
-    # Add an informational message for clearing the basket
     messages.info(request, "Your basket has been cleared.")
     return redirect('basket_v2:show_basket')

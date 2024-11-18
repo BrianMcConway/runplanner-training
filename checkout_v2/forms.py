@@ -1,20 +1,29 @@
 from django import forms
 from .models import Order
 
+
 class OrderForm(forms.ModelForm):
+    """
+    Form for creating and updating Order instances.
+    Includes fields for user details and shipping address.
+    """
     class Meta:
         model = Order
         fields = (
-            'full_name', 'email', 'phone_number', 
-            'street_address1', 'street_address2', 
+            'full_name', 'email', 'phone_number',
+            'street_address1', 'street_address2',
             'town_or_city', 'country', 'county',
             'postcode',  # Include postcode for complete address form
         )
 
     def __init__(self, *args, **kwargs):
+        """
+        Initialize the form with placeholders, autocomplete attributes,
+        and custom CSS classes for fields.
+        """
         super().__init__(*args, **kwargs)
-        
-        # Define placeholders and autocomplete attributes
+
+        # Define placeholders for each field
         placeholders = {
             'full_name': 'Full Name',
             'email': 'Email Address',
@@ -25,7 +34,8 @@ class OrderForm(forms.ModelForm):
             'county': 'County, State or Locality',
             'postcode': 'Postcode',  # Placeholder for postcode
         }
-        
+
+        # Define autocomplete attributes for form fields
         autocomplete_attributes = {
             'full_name': 'name',
             'email': 'email',
@@ -38,16 +48,16 @@ class OrderForm(forms.ModelForm):
             'country': 'country-name',
         }
 
-        # Autofocus the first field and set attributes for all fields
+        # Autofocus the first field (full) and set attributes for all fields
         self.fields['full_name'].widget.attrs.update({'autofocus': True})
         for field in self.fields:
             self.fields[field].widget.attrs.update({
                 'placeholder': placeholders.get(field, ''),
-                'id': field,
-                'name': field,
+                'id': field,  # Use the field name as the ID
+                'name': field,  # Use the field name as the form input name
                 'autocomplete': autocomplete_attributes.get(field, 'on'),
             })
-            # Add a consistent CSS class for styling
+            # Add a consistent CSS class for Stripe-style styling
             self.fields[field].widget.attrs['class'] = 'stripe-style-input'
-            # Remove field labels
+            # Remove field labels for a cleaner form appearance
             self.fields[field].label = False

@@ -3,6 +3,7 @@ from markdown import markdown
 from django.conf import settings
 from bleach.css_sanitizer import CSSSanitizer
 
+
 def sanitize_markdown(markdown_content):
     # Define allowed tags for sanitization
     allowed_tags = list(bleach.sanitizer.ALLOWED_TAGS) + [
@@ -21,7 +22,7 @@ def sanitize_markdown(markdown_content):
     # Define allowed CSS properties if style attributes are used
     css_sanitizer = CSSSanitizer(
         allowed_css_properties=[
-            'color', 'font-size', 'font-weight', 'font-style',  # Add more if needed
+            'color', 'font-size', 'font-weight', 'font-style',
             'text-decoration', 'background-color', 'border',
             'margin', 'padding', 'display', 'width', 'height',
         ]

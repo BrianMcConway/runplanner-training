@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import TrainingPlanFilterForm
 from .models import Product
 
+
 def training_plans(request):
     form = TrainingPlanFilterForm(request.GET or None)
     preview_plan = None
@@ -26,7 +27,11 @@ def training_plans(request):
             ).first()
 
             if not preview_plan:
-                form.add_error(None, "No training plans available. Please adjust your selections.")
+                form.add_error(
+                None,
+                """No training plans available.
+                Please adjust your selections."""
+            )
 
     return render(request, 'products_v2/training_plans.html', {
         'form': form,

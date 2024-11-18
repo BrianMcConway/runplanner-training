@@ -4,6 +4,7 @@ from .models import BasketItem
 from products_v2.models import Product
 from .views import Basket
 
+
 @receiver(user_logged_in)
 def sync_basket_on_login(sender, request, user, **kwargs):
     """
@@ -16,14 +17,14 @@ def sync_basket_on_login(sender, request, user, **kwargs):
         product_slug = item['slug']
         quantity = item['quantity']
         product = Product.objects.get(slug=product_slug)
-        
+
         # Update or create BasketItem
         BasketItem.objects.update_or_create(
             user=user,
             product=product,
-            defaults={'quantity': quantity}
+            defaults={'quantity': quantity},
         )
-    
+
     # Clear session basket after sync to avoid duplication
     session_basket.clear()
     request.session.modified = True

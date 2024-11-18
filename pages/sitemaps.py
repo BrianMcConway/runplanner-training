@@ -1,6 +1,7 @@
 from django.contrib.sitemaps import Sitemap
 from django.shortcuts import reverse
 
+
 class StaticViewSitemap(Sitemap):
     """
     Sitemap for static pages like Home, Contact, and About Us.

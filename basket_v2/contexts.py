@@ -2,6 +2,7 @@ from decimal import Decimal
 from django.conf import settings
 from .models import BasketItem
 
+
 def basket_contents(request):
     """
     Retrieve the basket items and total cost, combining session and user items.
@@ -18,7 +19,7 @@ def basket_contents(request):
             'quantity': item['quantity'],
             'price': item['price'],
             'slug': item['slug'],
-            'total_price': Decimal(item['price']) * item['quantity']
+            'total_price': Decimal(item['price']) * item['quantity'],
         })
 
     # If user is authenticated, load basket items from the database
@@ -31,13 +32,13 @@ def basket_contents(request):
                 'quantity': item.quantity,
                 'price': str(item.product.price),
                 'slug': item.product.slug,
-                'total_price': item.product.price * item.quantity
+                'total_price': item.product.price * item.quantity,
             })
 
     context = {
         'basket_items': basket_items,
         'total': total,
-        'grand_total': total  # Update if additional fees (e.g., shipping) are added
+        'grand_total': total,  # Update if additional fees are added
     }
 
     return context
