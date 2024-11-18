@@ -434,20 +434,6 @@ input, select {
    ===================================================== */
 
 /* Apply background image to body when homepage class is present */
-body.homepage {
-    /* Set the background image */
-    background: url('/static/images/running.jpg') no-repeat center center;
-    background-size: cover;
-    
-    /* Optional: Add a fallback background color */
-    background-color: #f0f0f0;
-    
-    /* Ensure the body takes the full height */
-    min-height: 100vh;
-    
-    /* Remove any default margins */
-    margin: 0;
-}
 
 /* Ensure the main content doesn't add extra padding on the homepage */
 body.homepage .main-content {
