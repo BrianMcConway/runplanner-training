@@ -285,6 +285,7 @@ The application is served over HTTPS, ensuring that all data transmitted between
 
 ## Features
 
+
 ### User Views and Features - Non-members/Members
 
 ### CRUD Functionality
@@ -294,7 +295,7 @@ Detail the Create, Read, Update, and Delete functionalities implemented in the p
 Highlight the main features of the project with descriptions and screenshots if available.
 
 ### Future Features
-- 
+- Future features will involve the generation of training plans based on the athletes needs. The plan will be generated for the athlete in their personal account, based on distance, skill level, elevation, tarining availability, and length of time until the event. This gives an extra edge over generic training plans that can be downloaded. This will expand on the current sorting system of finding a suitable training plan from the database. 
 
 ## Technologies & Languages Used
 
