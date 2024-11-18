@@ -186,11 +186,9 @@ STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
 STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
 STRIPE_CURRENCY = 'eur'
 
-# Security settings for production (optional)
-#if not DEBUG:
-   # SESSION_COOKIE_SECURE = True
-   # CSRF_COOKIE_SECURE = True
-   # SECURE_SSL_REDIRECT = True  # Redirect all HTTP traffic to HTTPS
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 MARKDOWNX_MARKDOWN_EXTENSIONS = [
     'markdown.extensions.extra',

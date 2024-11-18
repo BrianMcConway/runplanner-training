@@ -235,7 +235,7 @@ footer .input-group .btn-warning:hover {
 
 /* Background settings for the homepage with a scrollable image */
 .default-page {
-    background: url('/media/running.jpg') no-repeat center center;
+    background: url('/static/images/running.jpg') no-repeat center center;
     background-size: cover;
     background-attachment: scroll; /* Ensure the background image moves with the page */
     box-sizing: border-box; /* Ensures padding is included in min-height */
@@ -436,7 +436,7 @@ input, select {
 /* Apply background image to body when homepage class is present */
 body.homepage {
     /* Set the background image */
-    background: url('/media/running.jpg') no-repeat center center fixed;
+    background: url('/static/images/running.jpg') no-repeat center center;
     background-size: cover;
     
     /* Optional: Add a fallback background color */
