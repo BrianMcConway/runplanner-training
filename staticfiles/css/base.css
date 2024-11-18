@@ -536,7 +536,7 @@ body.homepage footer {
     .basket-table td:nth-child(3),
     .basket-table th:nth-child(4),
     .basket-table td:nth-child(4) {
-        width: 12-13%; /* Price, Quantity, and Total */
+        width: 12%; /* Price, Quantity, and Total */
     }
 
     .basket-table th:nth-child(5),
