@@ -17,8 +17,6 @@
 1. [Introduction](#introduction)
 2. [UX - User Experience](#ux---user-experience)
     - [Design Inspiration](#design-inspiration)
-    - [Color Choices](#color-choices)
-    - [Font Choices](#font-choices)
 3. [Project Planning](#project-planning)
     - [Agile Methodologies - Project Management](#agile-methodologies---project-management)
     - [User Stories](#user-stories)
