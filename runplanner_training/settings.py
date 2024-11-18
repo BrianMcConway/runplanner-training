@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security settings
 SECRET_KEY = os.environ.get('SECRET_KEY')
-DEBUG = True # Set to False in production
+DEBUG = False # Set to False in production
 
 # Allowed Hosts
 ALLOWED_HOSTS = [
@@ -178,7 +178,6 @@ CSRF_TRUSTED_ORIGINS = [
     'https://8000-brianmcconw-runplannert-glms1bohfnx.ws.codeinstitute-ide.net',
     'https://*.herokuapp.com',
     'https://runplanner-training.herokuapp.com',
-    'https://runplanner-training-cfec4c16a60a.herokuapp.com',
 ]
 
 # Stripe settings
@@ -188,10 +187,10 @@ STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
 STRIPE_CURRENCY = 'eur'
 
 # Security settings for production (optional)
-if not DEBUG:
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_SSL_REDIRECT = True  # Redirect all HTTP traffic to HTTPS
+#if not DEBUG:
+   # SESSION_COOKIE_SECURE = True
+   # CSRF_COOKIE_SECURE = True
+   # SECURE_SSL_REDIRECT = True  # Redirect all HTTP traffic to HTTPS
 
 MARKDOWNX_MARKDOWN_EXTENSIONS = [
     'markdown.extensions.extra',
