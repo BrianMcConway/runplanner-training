@@ -11,11 +11,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security settings
 SECRET_KEY = os.environ.get('SECRET_KEY')
-DEBUG = False
+DEBUG = True
 
 # Allowed Hosts
 ALLOWED_HOSTS = [
-    '8000-brianmcconw-runplannert-glms1bohfnx.ws.codeinstitute-ide.net',
+    '*',
+    '8000-brianmcconw-runplannert-blkh04wnm6p.ws-eu117.gitpod.io',
     '.herokuapp.com',
     'runplanner-training.herokuapp.com',
 ]
@@ -116,6 +117,12 @@ LOGOUT_REDIRECT_URL = '/'
 
 WSGI_APPLICATION = 'runplanner_training.wsgi.application'
 
+#DATABASES = {
+    #'default': dj_database_url.parse(
+       # os.environ.get('DATABASE_URL', 'sqlite:///db.sqlite3')
+   # )
+#}
+
 # Database
 DATABASES = {
     'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
@@ -181,9 +188,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CSRF Trusted Origins
 CSRF_TRUSTED_ORIGINS = [
     (
-        'https://8000-brianmcconw-'
-        'runplannert-glms1bohfnx.'
-        'ws.codeinstitute-ide.net'
+        'https://8000-brianmcconw-runplannert-blkh04wnm6p.ws-eu117.gitpod.io'
     ),
     'https://*.herokuapp.com',
     'https://runplanner-training.herokuapp.com',
