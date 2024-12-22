@@ -2,19 +2,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib.sitemaps.views import sitemap
 from pages.views import robots_txt
-from pages.sitemaps import StaticViewSitemap
-
-# Sitemaps
-sitemaps = {
-    'static': StaticViewSitemap,  # Sitemap for static pages
-}
 
 urlpatterns = [
     # Admin and authentication
     path('admin/', admin.site.urls),
-    path('accounts/', include('allauth.urls')),
+    path('accounts/', include('allauth.urls')),  # Include allauth URLs for authentication
 
     # Main app URLs
     path('', include('home.urls')),
@@ -26,23 +19,17 @@ urlpatterns = [
     path('pages/', include('pages.urls')),
     path('blog/', include('blog.urls', namespace='blog')),
 
-    # Robots.txt and Sitemap
+    # Robots.txt
     path('robots.txt', robots_txt, name='robots_txt'),
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
 
-    # Password management
-    path('accounts/', include('django.contrib.auth.urls')),
-
+    # Static sitemap.xml
+    path('sitemap.xml', include('django.contrib.staticfiles.urls')),  # Serve static sitemap.xml
+    
     # Markdown support
     path('markdownx/', include('markdownx.urls')),
 ]
 
 # Serve media files in development
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-# Serve static files in development
 if settings.DEBUG:
-    urlpatterns += static(
-        settings.STATIC_URL,
-        document_root=settings.STATIC_ROOT
-    )
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
