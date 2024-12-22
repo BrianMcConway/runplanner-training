@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.static import serve
 from pages.views import robots_txt
 
 urlpatterns = [
@@ -23,7 +24,7 @@ urlpatterns = [
     path('robots.txt', robots_txt, name='robots_txt'),
 
     # Serve static sitemap.xml
-    path('sitemap.xml', include('django.contrib.staticfiles.urls')),  # Ensure sitemap.xml is served
+    path('sitemap.xml', serve, {'document_root': settings.STATIC_ROOT, 'path': 'sitemap.xml'}, name='sitemap'),
 
     # Markdown support
     path('markdownx/', include('markdownx.urls')),
