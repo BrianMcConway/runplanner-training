@@ -11,11 +11,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security settings
 SECRET_KEY = os.environ.get('SECRET_KEY')
-DEBUG = True
+DEBUG = False
 
 # Allowed Hosts
 ALLOWED_HOSTS = [
-    '*',
     '8000-brianmcconw-runplannert-blkh04wnm6p.ws-eu117.gitpod.io',
     '.herokuapp.com',
     'runplanner-training.herokuapp.com',
@@ -116,12 +115,6 @@ ACCOUNT_LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 WSGI_APPLICATION = 'runplanner_training.wsgi.application'
-
-#DATABASES = {
-    #'default': dj_database_url.parse(
-       # os.environ.get('DATABASE_URL', 'sqlite:///db.sqlite3')
-   # )
-#}
 
 # Database
 DATABASES = {
