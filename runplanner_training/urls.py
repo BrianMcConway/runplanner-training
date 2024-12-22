@@ -22,9 +22,9 @@ urlpatterns = [
     # Robots.txt
     path('robots.txt', robots_txt, name='robots_txt'),
 
-    # Static sitemap.xml
-    path('sitemap.xml', include('django.contrib.staticfiles.urls')),  # Serve static sitemap.xml
-    
+    # Serve static sitemap.xml
+    path('sitemap.xml', include('django.contrib.staticfiles.urls')),  # Ensure sitemap.xml is served
+
     # Markdown support
     path('markdownx/', include('markdownx.urls')),
 ]
