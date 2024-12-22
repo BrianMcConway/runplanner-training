@@ -3,10 +3,25 @@
 <head>
     {% load static %}
     {% block meta %}
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="RunPlanner Training provides personalized training plans for runners of all levels. Achieve your running goals with expert guidance and support.">
+    <meta name="keywords" content="running, training plans, personalized plans, fitness, couch to 5k, marathon training, running goals, ultramarathon, 5k, 10k, half-marathon">
+    <meta name="author" content="RunPlanner Training">
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://runplanner-training-cfec4c16a60a.herokuapp.com/">
+    <meta property="og:title" content="RunPlanner Training">
+    <meta property="og:description" content="RunPlanner Training provides personalized training plans for runners of all levels. Achieve your running goals with expert guidance and support.">
+    <meta property="og:image" content="{% static 'images/running.jpg' %}">
+    <meta property="og:site_name" content="RunPlanner Training">
+    <meta property="og:see_also" content="https://www.facebook.com/profile.php?id=61568929409682">
+    <meta property="og:see_also" content="https://www.instagram.com/brianmcconway/">
+    <meta property="og:see_also" content="https://www.linkedin.com/in/brianmcconway/">
     {% endblock %}
 
     <!-- Favicon -->
