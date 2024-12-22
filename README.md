@@ -18,6 +18,7 @@
 2. [UX - User Experience](#ux---user-experience)
     - [Design Inspiration](#design-inspiration)
 3. [Project Planning](#project-planning)
+    - [Ecommerce Business Model](#ecommerce-business-model)
     - [Agile Methodologies - Project Management](#agile-methodologies---project-management)
     - [User Stories](#user-stories)
 4. [Wireframes](#wireframes)
@@ -63,6 +64,22 @@
 ## UX - User Experience
 
 ## Project Planning
+
+### Aim of Project
+
+The aim of this project is to provide runners of all levels with access to personalized, race-specific training plans that cater to their unique needs and goals. Whether preparing for a 5K, marathon, or ultramarathon, the platform ensures that runners receive detailed plans tailored to their chosen distance, terrain, and elevation. By addressing the lack of readily available, customizable training resources, this project seeks to empower athletes to train effectively and achieve their best performance. Additionally, through the integration of community-building tools such as newsletters and social media engagement, the project aims to inspire, educate, and connect runners worldwide, fostering a supportive and inclusive running community.
+
+### Ecommerce Business Model
+
+This site operates on a Business-to-Customer (B2C) model, selling digital training plans directly to individual customers. It focuses on one-time transactions, providing personalized plans without requiring subscriptions or long-term commitments.
+
+The site currently integrates a newsletter for email marketing and utilizes social media platforms such as Instagram, Facebook, and LinkedIn to enhance outreach and community engagement.
+
+Social media plays a pivotal role in fostering a community of runners, boosting brand awareness, and driving traffic to the site. The newsletter enables regular communication with subscribers, offering updates on new training plans, exclusive promotions, and valuable running tips. Together, these strategies create a strong foundation for growing and sustaining the business.
+
+Running, in all its forms, has experienced a significant surge in global popularity across various distances, from shorter road races to extreme ultramarathons. Events such as 5K and 10K races continue to attract beginners and recreational runners, while half-marathons and marathons have become milestones for those seeking greater challenges. Trail running, in particular, has witnessed remarkable growth worldwide, expanding by 231% over the past decade, with over 25,700 trail races held in 195 countries since 2013. Ultramarathons, which include any race longer than the standard marathon distance of 42.2 km (26.2 miles), have also surged in popularity, with global participation increasing by 345%. These endurance events appeal to runners seeking extraordinary challenges, with some races covering distances of 100 miles or more.
+
+Notably, trail running and ultramarathons are among the fastest-growing sports globally, fueled by the rise of outdoor and adventure activities. The inclusivity of these events, spanning diverse terrains and distances, caters to a wide range of participants, from casual runners to elite athletes. However, appropriate training plans that address specific distances, terrains, and elevation profiles are not readily available. RunPlanner Training fills this gap by providing athletes with tailored options to prepare effectively for race-specific challenges.
 
 ### Agile Methodologies - Project Management
 
