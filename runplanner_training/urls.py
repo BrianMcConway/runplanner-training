@@ -8,7 +8,7 @@ from pages.views import robots_txt
 urlpatterns = [
     # Admin and authentication
     path('admin/', admin.site.urls),
-    path('accounts/', include('allauth.urls')),  # Include allauth URLs for authentication
+    path('accounts/', include('allauth.urls')),
 
     # Main app URLs
     path('', include('home.urls')),
@@ -24,7 +24,12 @@ urlpatterns = [
     path('robots.txt', robots_txt, name='robots_txt'),
 
     # Serve static sitemap.xml
-    path('sitemap.xml', serve, {'document_root': settings.STATIC_ROOT, 'path': 'sitemap.xml'}, name='sitemap'),
+    path(
+        'sitemap.xml',
+        serve,
+        {'document_root': settings.STATIC_ROOT, 'path': 'sitemap.xml'},
+        name='sitemap'
+    ),
 
     # Markdown support
     path('markdownx/', include('markdownx.urls')),
@@ -32,5 +37,9 @@ urlpatterns = [
 
 # Serve media files in development
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    )
+    urlpatterns += static(
+        settings.STATIC_URL, document_root=settings.STATIC_ROOT
+    )
