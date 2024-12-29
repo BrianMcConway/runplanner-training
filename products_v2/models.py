@@ -2,7 +2,8 @@ from django.db import models
 
 
 class Product(models.Model):
-    """Model representing a product, which can be a training plan or nutrition item."""
+    """Model representing a product,
+    which can be a training plan or nutrition item."""
 
     CATEGORY_CHOICES = [
         ('training_plan', 'Training Plan'),

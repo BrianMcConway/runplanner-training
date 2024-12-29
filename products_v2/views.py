@@ -23,17 +23,23 @@ def training_plans(request):
                 distance=distance,
                 difficulty=difficulty,
                 terrain=terrain,
-                elevation=elevation
+                elevation=elevation,
             ).first()
 
             if not preview_plan:
                 form.add_error(
-                None,
-                """No training plans available.
-                Please adjust your selections."""
-            )
+                    None,
+                    (
+                        "No training plans available. "
+                        "Please adjust your selections."
+                    ),
+                )
 
-    return render(request, 'products_v2/training_plans.html', {
-        'form': form,
-        'preview_plan': preview_plan
-    })
+    return render(
+        request,
+        'products_v2/training_plans.html',
+        {
+            'form': form,
+            'preview_plan': preview_plan,
+        },
+    )
